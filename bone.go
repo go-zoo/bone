@@ -33,9 +33,11 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if valid != "" {
 		m.Handlers[valid].ServeHTTP(rw, req)
 	} else {
-
-		m.NotFound.ServeHTTP(rw, req)
-
+		if m.NotFound != nil {
+			m.NotFound.ServeHTTP(rw, req)
+		} else {
+			http.NotFound(rw, req)
+		}
 	}
 
 }
