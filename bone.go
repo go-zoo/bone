@@ -1,3 +1,10 @@
+/**********************************
+***      HTTP Router in Go      ***
+***  Code is under MIT license  ***
+***    Code by CodingFerret     ***
+*** 	github.com/squiidz      ***
+***********************************/
+
 package bone
 
 import (
