@@ -20,7 +20,7 @@ import(
 func main () {
   mux := bone.NewMux()
   
-  mux.Handle("/home/:id", HomeHandler")
+  mux.Handle("/home/:id", HomeHandler)
   
   http.ListenAndServe(":8080", mux)
 }
