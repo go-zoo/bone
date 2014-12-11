@@ -16,7 +16,7 @@ bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support
 - gorilla/mux : 			       1158 ns/op
 - gorilla/pat : 			       1313 ns/op
 
-[ These test are just for fun, all these router are great and really efficiant. ]
+[ These test are just for fun, all these router are great and really efficient. ]
 
 ## Example
 
