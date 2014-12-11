@@ -31,7 +31,7 @@ import(
 )
 
 func main () {
-  mux := bone.NewMux()
+  mux := bone.New()
   
   // Method takes http.HandlerFunc
   mux.Get("/home/:id", HomeHandler)
