@@ -83,8 +83,7 @@ func (m *Mux) Handle(s string, h http.Handler) {
 // Get add a new route to the Mux with the Get method
 func (m *Mux) Get(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Get()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Get())
 }
 
 // Post add a new route to the Mux with the Post method

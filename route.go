@@ -78,38 +78,45 @@ func (r *Route) Matcher(path string) (url.Values, bool) {
 }
 
 // Set the route method to Get
-func (r *Route) Get() {
+func (r *Route) Get() *Route {
 	r.Method = "GET"
+	return r
 }
 
 // Set the route method to Post
-func (r *Route) Post() {
+func (r *Route) Post() *Route {
 	r.Method = "POST"
+	return r
 }
 
 // Set the route method to Put
-func (r *Route) Put() {
+func (r *Route) Put() *Route {
 	r.Method = "PUT"
+	return r
 }
 
 // Set the route method to Delete
-func (r *Route) Delete() {
+func (r *Route) Delete() *Route {
 	r.Method = "DELETE"
+	return r
 }
 
 // Set the route method to Head
-func (r *Route) Head() {
+func (r *Route) Head() *Route {
 	r.Method = "HEAD"
+	return r
 }
 
 // Set the route method to Patch
-func (r *Route) Patch() {
+func (r *Route) Patch() *Route {
 	r.Method = "PATCH"
+	return r
 }
 
 // Set the route method to Options
-func (r *Route) Options() {
+func (r *Route) Options() *Route {
 	r.Method = "OPTIONS"
+	return r
 }
 
 // Only using this in squiidz/fur package
