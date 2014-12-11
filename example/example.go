@@ -16,6 +16,7 @@ func main() {
 	// Get, Post etc... takes http.HandlerFunc as argument.
 	mux.Post("/home", homeHandler)
 
+	// Start Listening
 	http.ListenAndServe(":8080", mux)
 }
 

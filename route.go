@@ -14,6 +14,7 @@ import (
 	"strings"
 )
 
+// Route content the required information for a valid route
 type Route struct {
 	Path    string
 	Size    int
@@ -22,12 +23,14 @@ type Route struct {
 	Method  string
 }
 
+// pattern content the required information for the route pattern
 type pattern struct {
 	Exist bool
 	Id    string
 	Pos   int
 }
 
+// NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
 	r := &Route{Path: url, handler: h}
 	r.save()
@@ -61,6 +64,7 @@ func (r *Route) Info() {
 	fmt.Printf("Method : %s\n", r.Method)
 }
 
+// Check if the request match the route pattern
 func (r *Route) Matcher(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
 
@@ -73,34 +77,42 @@ func (r *Route) Matcher(path string) (url.Values, bool) {
 	return nil, false
 }
 
+// Set the route method to Get
 func (r *Route) Get() {
 	r.Method = "GET"
 }
 
+// Set the route method to Post
 func (r *Route) Post() {
 	r.Method = "POST"
 }
 
+// Set the route method to Put
 func (r *Route) Put() {
 	r.Method = "PUT"
 }
 
+// Set the route method to Delete
 func (r *Route) Delete() {
 	r.Method = "DELETE"
 }
 
+// Set the route method to Head
 func (r *Route) Head() {
 	r.Method = "HEAD"
 }
 
+// Set the route method to Patch
 func (r *Route) Patch() {
 	r.Method = "PATCH"
 }
 
+// Set the route method to Options
 func (r *Route) Options() {
 	r.Method = "OPTIONS"
 }
 
+// Only using this in squiidz/fur package
 func (r Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	if r.Method != "" {
@@ -118,6 +130,7 @@ func (r Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// DEBUG r.Info()
 }
 
+// Check if the request respect the route method if provided.
 func (r *Route) MethCheck(req *http.Request) bool {
 	if r.Method != "" {
 		if req.Method == r.Method {
