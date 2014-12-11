@@ -3,7 +3,18 @@ bone
 
 ## What is bone ?
 
-bone is a lightweight HTTP Multiplexer. It support URL variables and http method declaration.
+bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables and http method declaration.
+
+## Speed
+
+- bone : 	 				 555  ns/op
+- daryl/zeus :				 590  ns/op
+- julienschmidt/httprouter : 611  ns/op
+- net/http : 				 924  ns/op
+- gorilla/mux : 			 1158 ns/op
+- gorilla/pat : 			 1313 ns/op
+
+* These test are just for fun, all these router are great and really efficiant.
 
 ## Example
 
@@ -20,16 +31,23 @@ import(
 func main () {
   mux := bone.NewMux()
   
-  mux.Handle("/home/:id", HomeHandler)
-  
+  // Method takes http.HandlerFunc
+  mux.Get("/home/:id", HomeHandler)
+  mux.Post("/data", DataHandler)
+
+  // Handle take http.Handler
+  mux.Handle("/", http.HandlerFunc(RootHandler))
+
   http.ListenAndServe(":8080", mux)
 }
 
 ```
 ## TODO
 
-- Url parameters
-- Custom Regex parameters
+- DOC
+- More Testing
+- Debugging
+- Refactoring
 
 ## Contributing
 
