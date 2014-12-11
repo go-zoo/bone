@@ -5,16 +5,18 @@ bone
 
 bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables and http method declaration.
 
+![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
+
 ## Speed
 
-- bone : 	 				 555  ns/op
-- daryl/zeus :				 590  ns/op
+- bone : 	 				           555  ns/op
+- daryl/zeus :				       590  ns/op
 - julienschmidt/httprouter : 611  ns/op
-- net/http : 				 924  ns/op
-- gorilla/mux : 			 1158 ns/op
-- gorilla/pat : 			 1313 ns/op
+- net/http : 				         924  ns/op
+- gorilla/mux : 			       1158 ns/op
+- gorilla/pat : 			       1313 ns/op
 
-* These test are just for fun, all these router are great and really efficiant.
+[ These test are just for fun, all these router are great and really efficiant. ]
 
 ## Example
 
