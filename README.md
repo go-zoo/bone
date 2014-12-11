@@ -3,10 +3,29 @@ bone
 
 ## What is bone ?
 
-bone is in development, don't use it.
-For the moment, there's a lot of better and more complete multiplexer !
-[Gorilla](https://github.com/gorilla/mux)
+bone is a lightweight HTTP Multiplexer. It support URL variables and http method declaration.
 
+## Example
+
+``` go
+
+package main
+
+import(
+  "net/http"
+
+  "github.com/squiidz/bone"
+)
+
+func main () {
+  mux := bone.NewMux()
+  
+  mux.Handle("/home/:id", HomeHandler")
+  
+  http.ListenAndServe(":8080", mux)
+}
+
+```
 ## TODO
 
 - Url parameters
