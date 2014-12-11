@@ -49,6 +49,7 @@ func main () {
 - DOC
 - More Testing
 - Debugging
+- Optimisation
 - Refactoring
 
 ## Contributing
