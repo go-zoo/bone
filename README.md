@@ -3,7 +3,8 @@ bone
 
 ## What is bone ?
 
-bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables and http method declaration.
+bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables, http method declaration
+and custom NotFound handler.
 Also bone, always gonna be supported, and updated.
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
