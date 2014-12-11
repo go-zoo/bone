@@ -120,13 +120,11 @@ func (r Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 func (r *Route) MethCheck(req *http.Request) bool {
 	if r.Method != "" {
-
 		if req.Method == r.Method {
 			return true
 		} else {
 			return false
 		}
-
 	} else {
 		return true
 	}

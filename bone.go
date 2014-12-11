@@ -21,7 +21,6 @@ func New() *Mux {
 }
 
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-
 	reqPath := req.URL.Path
 	if !valid(reqPath) {
 		http.Redirect(rw, req, reqPath[:len(reqPath)-1], http.StatusMovedPermanently)
@@ -63,9 +62,7 @@ func (m *Mux) BadRequest(rw http.ResponseWriter, req *http.Request) {
 }
 
 func valid(path string) bool {
-	pathLen := len(path)
-
-	if pathLen > 1 && path[pathLen-1:] == "/" {
+	if len(path) > 1 && path[len(path)-1:] == "/" {
 		return false
 	}
 	return true
