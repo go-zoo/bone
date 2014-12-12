@@ -25,7 +25,7 @@ func New() *Mux {
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqPath := req.URL.Path
-	// Check if the request path does'nt end with /
+	// Check if the request path doesn't end with /
 	if !valid(reqPath) {
 		http.Redirect(rw, req, reqPath[:len(reqPath)-1], http.StatusMovedPermanently)
 		return
