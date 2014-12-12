@@ -100,43 +100,37 @@ func (m *Mux) Get(s string, h http.HandlerFunc) {
 // Post add a new route to the Mux with the Post method
 func (m *Mux) Post(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Post()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Post())
 }
 
 // Put add a new route to the Mux with the Put method
 func (m *Mux) Put(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Put()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Put())
 }
 
 // Delete add a new route to the Mux with the Delete method
 func (m *Mux) Delete(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Delete()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Delete())
 }
 
 // Head add a new route to the Mux with the Head method
 func (m *Mux) Head(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Head()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Head())
 }
 
 // Patch add a new route to the Mux with the Patch method
 func (m *Mux) Patch(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Patch()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Patch())
 }
 
 // Options add a new route to the Mux with the Options method
 func (m *Mux) Options(s string, h http.HandlerFunc) {
 	r := NewRoute(s, h)
-	r.Options()
-	m.Routes = append(m.Routes, r)
+	m.Routes = append(m.Routes, r.Options())
 }
 
 // Set the mux custom 404 handler
