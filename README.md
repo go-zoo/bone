@@ -1,4 +1,4 @@
-bone
+bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://godoc.org/github.com/squiidz/bone)
 =======
 
 ## What is bone ?
