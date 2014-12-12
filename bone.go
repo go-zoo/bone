@@ -44,7 +44,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				return
 			}
 			continue
-			// If not pattern are set in the route.
+			// If no pattern are set in the route.
 		} else {
 			if len(req.URL.Path) >= len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
 				r.handler.ServeHTTP(rw, req)
