@@ -67,7 +67,7 @@ func (r *Route) Info() {
 // Check if the request match the route pattern
 func (r *Route) Matcher(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	if r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
+	if len(path) >= len(r.Path) && r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
 		if len(ss) == r.Size && ss[r.Size-1] != "" {
 			uV := url.Values{}
 			uV.Add(r.pattern.Id, ss[r.pattern.Pos])
