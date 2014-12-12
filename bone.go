@@ -9,6 +9,7 @@ package bone
 
 import (
 	"net/http"
+	"strings"
 )
 
 // Mux have routes and a notFound handler
@@ -46,7 +47,10 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			continue
 			// If no pattern are set in the route.
 		} else {
-			if len(req.URL.Path) >= len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
+			if len(req.URL.Path) == len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
+				r.handler.ServeHTTP(rw, req)
+				return
+			} else if fileExt(req.URL.Path) {
 				r.handler.ServeHTTP(rw, req)
 				return
 			}
@@ -72,6 +76,14 @@ func valid(path string) bool {
 		return false
 	}
 	return true
+}
+
+func fileExt(s string) bool {
+	parts := strings.Split(s, "/")
+	if strings.Contains(parts[len(parts)-1], ".") {
+		return true
+	}
+	return false
 }
 
 // Handle add a new route to the Mux without a HTTP method
