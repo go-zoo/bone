@@ -34,8 +34,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	for _, r := range m.Routes {
 		// Check if the request method is valid.
 		if !r.MethCheck(req) {
-			m.BadRequest(rw, req)
-			return
+			continue
 		}
 		// If the route have a pattern.
 		if r.pattern.Exist {
