@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/squiidz/bone"
@@ -13,7 +12,7 @@ func main() {
 	// Custom 404
 	mux.NotFound(Handler404)
 	// Handle with any http method, Handle takes http.Handler as argument.
-	mux.Handle("/index", homeHandler)
+	mux.Handle("/index", http.HandlerFunc(homeHandler))
 	// Get, Post etc... takes http.HandlerFunc as argument.
 	mux.Post("/home", homeHandler)
 
