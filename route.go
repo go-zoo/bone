@@ -54,7 +54,7 @@ func (r *Route) save() {
 
 }
 
-// Info is only use for debugging
+// Info is only used for debugging
 func (r *Route) Info() {
 	fmt.Printf("Path : %s\n", r.Path)
 	fmt.Printf("Size : %d\n", r.Size)
