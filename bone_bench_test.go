@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// Test the op/s
+// Test the ns/op
 func BenchmarkMux(b *testing.B) {
 	request, _ := http.NewRequest("GET", "/", nil)
 	response := httptest.NewRecorder()
