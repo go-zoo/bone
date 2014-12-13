@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
-	"log"
 	"github.com/squiidz/bone"
+	"log"
+	"net/http"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 	mux.Post("/home", homeHandler)
 
 	// Start Listening
-	log.Fatal(http.ListenAndServe(":8080", mux));
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 
 func homeHandler(rw http.ResponseWriter, req *http.Request) {

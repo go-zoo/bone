@@ -13,6 +13,8 @@ import (
 )
 
 // Mux have routes and a notFound handler
+// Route: all the registred route
+// notFound: 404 handler, default http.NotFound if not provided
 type Mux struct {
 	Routes   []*Route
 	notFound http.HandlerFunc
@@ -39,7 +41,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 		// If the route have a pattern.
 		if r.pattern.Exist {
-			if v, ok := r.Matcher(req.URL.Path); ok {
+			if v, ok := r.Match(req.URL.Path); ok {
 				req.URL.RawQuery = v.Encode() + "&" + req.URL.RawQuery
 				r.handler.ServeHTTP(rw, req)
 				return
@@ -47,7 +49,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			continue
 			// If no pattern are set in the route.
 		} else {
-			if len(req.URL.Path) == len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
+			if len(req.URL.Path) == r.Size && req.URL.Path[:r.Size] == r.Path {
 				r.handler.ServeHTTP(rw, req)
 				return
 			} else if fileExt(req.URL.Path) {
@@ -57,10 +59,10 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			continue
 		}
 	}
-
 	m.BadRequest(rw, req)
 }
 
+// If no pattern are set in the route.
 // Handle the bad request
 func (m *Mux) BadRequest(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
@@ -78,6 +80,7 @@ func valid(path string) bool {
 	return true
 }
 
+// Check if the requested route is for a static file
 func fileExt(s string) bool {
 	parts := strings.Split(s, "/")
 	if strings.Contains(parts[len(parts)-1], ".") {
@@ -87,53 +90,53 @@ func fileExt(s string) bool {
 }
 
 // Handle add a new route to the Mux without a HTTP method
-func (m *Mux) Handle(s string, h http.Handler) {
-	m.Routes = append(m.Routes, NewRoute(s, h))
+func (m *Mux) Handle(path string, handler http.Handler) {
+	m.Routes = append(m.Routes, NewRoute(path, handler))
 }
 
 // Get add a new route to the Mux with the Get method
-func (m *Mux) Get(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Get(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Get())
 }
 
 // Post add a new route to the Mux with the Post method
-func (m *Mux) Post(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Post(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Post())
 }
 
 // Put add a new route to the Mux with the Put method
-func (m *Mux) Put(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Put(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Put())
 }
 
 // Delete add a new route to the Mux with the Delete method
-func (m *Mux) Delete(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Delete(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Delete())
 }
 
 // Head add a new route to the Mux with the Head method
-func (m *Mux) Head(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Head(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Head())
 }
 
 // Patch add a new route to the Mux with the Patch method
-func (m *Mux) Patch(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Patch(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Patch())
 }
 
 // Options add a new route to the Mux with the Options method
-func (m *Mux) Options(s string, h http.HandlerFunc) {
-	r := NewRoute(s, h)
+func (m *Mux) Options(path string, handler http.HandlerFunc) {
+	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Options())
 }
 
 // Set the mux custom 404 handler
-func (m *Mux) NotFound(h http.HandlerFunc) {
-	m.notFound = h
+func (m *Mux) NotFound(handler http.HandlerFunc) {
+	m.notFound = handler
 }

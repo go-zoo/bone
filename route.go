@@ -15,15 +15,33 @@ import (
 )
 
 // Route content the required information for a valid route
+// Path: is the Route URL
+// Size: is the length of the path
+// Token: is the value of each part of the path, split by /
+// pattern: is content information about the route, if it's have a route variable
+// handler: is the handler who handle this route
+// Method: define HTTP method on the route
 type Route struct {
 	Path    string
 	Size    int
+	Token   token
 	pattern pattern
 	handler http.Handler
 	Method  string
 }
 
+// token content all value of a spliting route path
+// tokens: string value of each token
+// size: number of token
+type token struct {
+	tokens []string
+	size   int
+}
+
 // pattern content the required information for the route pattern
+// Exist: check if a variable was declare on the route
+// Id: the name of the variable
+// Pos: postition of var in the route path
 type pattern struct {
 	Exist bool
 	Id    string
@@ -39,8 +57,8 @@ func NewRoute(url string, h http.Handler) *Route {
 
 // Save, set automaticly the the Route.Size and Route.pattern value
 func (r *Route) save() {
-	subs := strings.Split(r.Path, "/")
-	for i, s := range subs {
+	r.Token.tokens = strings.Split(r.Path, "/")
+	for i, s := range r.Token.tokens {
 		if len(s) >= 1 {
 			if s[:1] == ":" {
 				r.pattern.Exist = true
@@ -49,32 +67,44 @@ func (r *Route) save() {
 			}
 		}
 	}
-	r.Size = len(subs)
-	return
-
+	r.Size = len(r.Path)
+	r.Token.size = len(r.Token.tokens)
 }
 
 // Info is only used for debugging
 func (r *Route) Info() {
-	fmt.Printf("Path : %s\n", r.Path)
-	fmt.Printf("Size : %d\n", r.Size)
+	fmt.Printf("Path :         %s\n", r.Path)
+	fmt.Printf("Size : 		   %d\n", r.Size)
 	fmt.Printf("Have Pattern : %t\n", r.pattern.Exist)
-	fmt.Printf("ID : %s\n", r.pattern.Id)
-	fmt.Printf("Position : %d\n", r.pattern.Pos)
-	fmt.Printf("Method : %s\n", r.Method)
+	fmt.Printf("ID :           %s\n", r.pattern.Id)
+	fmt.Printf("Position :     %d\n", r.pattern.Pos)
+	fmt.Printf("Method :       %s\n", r.Method)
 }
 
 // Check if the request match the route pattern
-func (r *Route) Matcher(path string) (url.Values, bool) {
+func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	if len(path) >= len(r.Path) && r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
-		if len(ss) == r.Size && ss[r.Size-1] != "" {
+	if len(path) >= r.Token.size && r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
+		if len(ss) == r.Token.size && ss[r.Token.size-1] != "" {
 			uV := url.Values{}
 			uV.Add(r.pattern.Id, ss[r.pattern.Pos])
 			return uV, true
 		}
 	}
 	return nil, false
+}
+
+// Check if the request respect the route method if provided.
+func (r *Route) MethCheck(req *http.Request) bool {
+	if r.Method != "" {
+		if req.Method == r.Method {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		return true
+	}
 }
 
 // Set the route method to Get
@@ -135,17 +165,4 @@ func (r Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// DEBUG r.Info()
-}
-
-// Check if the request respect the route method if provided.
-func (r *Route) MethCheck(req *http.Request) bool {
-	if r.Method != "" {
-		if req.Method == r.Method {
-			return true
-		} else {
-			return false
-		}
-	} else {
-		return true
-	}
 }
