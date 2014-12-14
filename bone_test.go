@@ -10,9 +10,9 @@ import (
 func TestRouting(t *testing.T) {
 	mux := New()
 	call := false
-	mux.Get("/a/:id", func(http.ResponseWriter, *http.Request) {
+	mux.Get("/a/:id", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		call = true
-	})
+	}))
 
 	r, _ := http.NewRequest("GET", "/b/123", nil)
 	w := httptest.NewRecorder()
@@ -27,9 +27,9 @@ func TestRouting(t *testing.T) {
 func TestRoutingMethod(t *testing.T) {
 	mux := New()
 	call := false
-	mux.Get("/t", func(http.ResponseWriter, *http.Request) {
+	mux.Get("/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		call = true
-	})
+	}))
 
 	r, _ := http.NewRequest("POST", "/t", nil)
 	w := httptest.NewRecorder()
@@ -44,12 +44,12 @@ func TestRoutingMethod(t *testing.T) {
 func TestRoutingPath(t *testing.T) {
 	mux := New()
 	call := false
-	mux.Get("/t", func(http.ResponseWriter, *http.Request) {
+	mux.Get("/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		call = true
-	})
-	mux.Get("/t/x", func(http.ResponseWriter, *http.Request) {
+	}))
+	mux.Get("/t/x", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		call = false
-	})
+	}))
 
 	r, _ := http.NewRequest("GET", "/t/x", nil)
 	w := httptest.NewRecorder()

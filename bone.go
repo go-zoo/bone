@@ -95,43 +95,43 @@ func (m *Mux) Handle(path string, handler http.Handler) {
 }
 
 // Get add a new route to the Mux with the Get method
-func (m *Mux) Get(path string, handler http.HandlerFunc) {
+func (m *Mux) Get(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Get())
 }
 
 // Post add a new route to the Mux with the Post method
-func (m *Mux) Post(path string, handler http.HandlerFunc) {
+func (m *Mux) Post(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Post())
 }
 
 // Put add a new route to the Mux with the Put method
-func (m *Mux) Put(path string, handler http.HandlerFunc) {
+func (m *Mux) Put(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Put())
 }
 
 // Delete add a new route to the Mux with the Delete method
-func (m *Mux) Delete(path string, handler http.HandlerFunc) {
+func (m *Mux) Delete(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Delete())
 }
 
 // Head add a new route to the Mux with the Head method
-func (m *Mux) Head(path string, handler http.HandlerFunc) {
+func (m *Mux) Head(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Head())
 }
 
 // Patch add a new route to the Mux with the Patch method
-func (m *Mux) Patch(path string, handler http.HandlerFunc) {
+func (m *Mux) Patch(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Patch())
 }
 
 // Options add a new route to the Mux with the Options method
-func (m *Mux) Options(path string, handler http.HandlerFunc) {
+func (m *Mux) Options(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	m.Routes = append(m.Routes, r.Options())
 }
