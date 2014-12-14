@@ -67,3 +67,7 @@ func main () {
 
 ## License
 MIT
+
+## Links
+
+Middleware Chaining module : [Claw](https://github.com/squiidz/claw)
