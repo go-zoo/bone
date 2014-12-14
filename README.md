@@ -12,9 +12,9 @@ and custom NotFound handler.
 
 ```
 - BenchmarkBoneMux        10000000               118 ns/op
-- BenchmarkZeusMux          100000             54813 ns/op
-- BenchmarkHttpRouterMux  10000000               143 ns/op
-- BenchmarkNetHttpMux      3000000               548 ns/op
+- BenchmarkZeusMux          100000               144 ns/op
+- BenchmarkHttpRouterMux  10000000               134 ns/op
+- BenchmarkNetHttpMux      3000000               580 ns/op
 - BenchmarkGorillaMux       300000              3333 ns/op
 - BenchmarkGorillaPatMux   1000000              1889 ns/op
 ```
