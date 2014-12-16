@@ -16,9 +16,9 @@ func BenchmarkBoneMux(b *testing.B) {
 	request, _ := http.NewRequest("GET", "/aas", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
-	muxx.Get("/", Bench)
-	muxx.Post("/a", Bench)
-	muxx.Get("/aas", Bench)
+	muxx.Get("/", http.HandlerFunc(Bench))
+	muxx.Post("/a", http.HandlerFunc(Bench))
+	muxx.Get("/aas", http.HandlerFunc(Bench))
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
