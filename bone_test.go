@@ -1,6 +1,7 @@
 package bone
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -57,5 +58,27 @@ func TestRoutingPath(t *testing.T) {
 
 	if call {
 		t.Error("response with the wrong path")
+	}
+}
+
+func TestRoutingVariable(t *testing.T) {
+	var (
+		expected = "variable"
+		got      string
+		mux      = New()
+		w        = httptest.NewRecorder()
+	)
+	mux.Get("/:var", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.URL.Query().Get("var")
+	}))
+
+	r, err := http.NewRequest("GET", fmt.Sprintf("/%s", expected), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux.ServeHTTP(w, r)
+
+	if got != expected {
+		t.Fatalf("expected %s, got %s", expected, got)
 	}
 }
