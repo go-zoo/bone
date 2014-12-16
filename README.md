@@ -20,6 +20,8 @@ and custom NotFound handler.
 ```
 
 [ These test are just for fun, all these router are great and really efficient. ]
+[ Bone do not pretend to be the fastest router for every job. ]
+[ Big project should use a other solution for the moment. ]
 
 ## Example
 

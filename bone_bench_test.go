@@ -13,10 +13,12 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/", nil)
+	request, _ := http.NewRequest("GET", "/aas", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
-	muxx.Get("/", http.HandlerFunc(Bench))
+	muxx.Get("/", Bench)
+	muxx.Post("/a", Bench)
+	muxx.Get("/aas", Bench)
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
@@ -25,10 +27,12 @@ func BenchmarkBoneMux(b *testing.B) {
 
 // Test daryl/zeus ns/op
 func BenchmarkZeusMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/", nil)
+	request, _ := http.NewRequest("GET", "/aas", nil)
 	response := httptest.NewRecorder()
 	muxx := zeus.New()
 	muxx.GET("/", Bench)
+	muxx.POST("/a", Bench)
+	muxx.GET("/aas", Bench)
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
@@ -37,10 +41,12 @@ func BenchmarkZeusMux(b *testing.B) {
 
 // Test httprouter ns/op
 func BenchmarkHttpRouterMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/", nil)
+	request, _ := http.NewRequest("GET", "/aas", nil)
 	response := httptest.NewRecorder()
 	muxx := httprouter.New()
 	muxx.Handler("GET", "/", http.HandlerFunc(Bench))
+	muxx.Handler("POST", "/a", http.HandlerFunc(Bench))
+	muxx.Handler("GET", "/aas", http.HandlerFunc(Bench))
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
