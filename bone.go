@@ -143,6 +143,7 @@ func (m *Mux) NotFound(handler http.HandlerFunc) {
 // Handle the bad request
 func (m *Mux) BadRequest(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
+		rw.WriteHeader(http.StatusNotFound)
 		m.notFound(rw, req)
 	} else {
 		http.NotFound(rw, req)
