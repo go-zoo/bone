@@ -82,3 +82,19 @@ func TestRoutingVariable(t *testing.T) {
 		t.Fatalf("expected %s, got %s", expected, got)
 	}
 }
+
+func TestRoutingSlash(t *testing.T) {
+	mux := New()
+	call := false
+	mux.Get("/", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !call {
+		t.Error("root not serve")
+	}
+}

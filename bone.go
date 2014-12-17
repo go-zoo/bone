@@ -9,7 +9,6 @@ package bone
 
 import (
 	"net/http"
-	"strings"
 )
 
 // Mux have routes and a notFound handler
@@ -17,6 +16,7 @@ import (
 // notFound: 404 handler, default http.NotFound if not provided
 type Mux struct {
 	Routes   map[string][]*Route
+	Static   []*Route
 	notFound http.HandlerFunc
 }
 
@@ -34,15 +34,19 @@ func New() *Mux {
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqPath := req.URL.Path
+	reqLen := len(reqPath)
 	// Check if the request path doesn't end with /
 	if !valid(reqPath) {
-		http.Redirect(rw, req, reqPath[:len(reqPath)-1], http.StatusMovedPermanently)
+		http.Redirect(rw, req, reqPath[:reqLen-1], http.StatusMovedPermanently)
 		return
 	}
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route have a pattern.
-		if r.pattern.Exist {
+		if reqLen == r.Size && reqPath[:r.Size] == r.Path {
+			r.handler.ServeHTTP(rw, req)
+			return
+		} else if r.pattern.Exist {
 			if v, ok := r.Match(req.URL.Path); ok {
 				req.URL.RawQuery = v.Encode() + "&" + req.URL.RawQuery
 				r.handler.ServeHTTP(rw, req)
@@ -50,32 +54,48 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			}
 			continue
 			// If no pattern are set in the route.
-		} else {
-			if len(reqPath) == r.Size && reqPath[:r.Size] == r.Path {
-				r.handler.ServeHTTP(rw, req)
-				return
-			} else if fileExt(req.URL.Path) {
-				r.handler.ServeHTTP(rw, req)
-				return
-			}
-			continue
 		}
+		continue
+
 	}
+	// If no valid Route found, check for static file
+	for _, s := range m.Static {
+		if reqLen >= s.Size && reqPath[:s.Size] == s.Path {
+			s.ServeHTTP(rw, req)
+			return
+		}
+		continue
+	}
+
 	m.BadRequest(rw, req)
+}
+
+// HandleFunc is use to pass a func(http.ResponseWriter, *Http.Request) instead of http.Handler
+func (m *Mux) HandleFunc(path string, handler http.HandlerFunc) {
+	m.Handle(path, handler)
 }
 
 // Handle add a new route to the Mux without a HTTP method
 func (m *Mux) Handle(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
-	for _, mt := range METHOD {
-		m.Routes[mt] = append(m.Routes[mt], r)
+	if m.isStatic(path) {
+		m.Static = append(m.Static, r.Get())
+		return
+	} else {
+		for _, mt := range METHOD {
+			m.Routes[mt] = append(m.Routes[mt], r)
+		}
 	}
 }
 
 // Get add a new route to the Mux with the Get method
 func (m *Mux) Get(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
-	m.Routes["GET"] = append(m.Routes["GET"], r.Get())
+	if !m.isStatic(path) {
+		m.Routes["GET"] = append(m.Routes["GET"], r.Get())
+		return
+	}
+	m.Static = append(m.Static, r.Get())
 }
 
 // Post add a new route to the Mux with the Post method
@@ -138,9 +158,9 @@ func valid(path string) bool {
 }
 
 // Check if the requested route is for a static file
-func fileExt(s string) bool {
-	parts := strings.Split(s, "/")
-	if strings.Contains(parts[len(parts)-1], ".") {
+func (m *Mux) isStatic(s string) bool {
+	sl := len(s)
+	if sl > 1 && s[sl-1:] == "/" {
 		return true
 	}
 	return false
