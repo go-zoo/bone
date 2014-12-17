@@ -99,6 +99,47 @@ func TestRoutingVariable(t *testing.T) {
 	}
 }
 
+func TestRoutingVerbs(t *testing.T) {
+	var (
+		methods = []string{"DELETE", "GET", "HEAD", "PUT", "POST", "PATCH", "OPTIONS", "HEAD"}
+		path    = "/"
+		h       = http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
+	)
+	for _, meth := range methods {
+		m := New()
+		switch meth {
+		case "DELETE":
+			m.Delete(path, h)
+		case "GET":
+			m.Get(path, h)
+		case "HEAD":
+			m.Head(path, h)
+		case "POST":
+			m.Post(path, h)
+		case "PUT":
+			m.Put(path, h)
+		case "PATCH":
+			m.Patch(path, h)
+		case "OPTIONS":
+			m.Options(path, h)
+		}
+		s := httptest.NewServer(m)
+		req, err := http.NewRequest(meth, s.URL, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != 200 {
+			t.Fatalf("%s: HTTP %d", meth, resp.StatusCode)
+		}
+		s.Close()
+	}
+}
+
 func TestRoutingSlash(t *testing.T) {
 	mux := New()
 	call := false
