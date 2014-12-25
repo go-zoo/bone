@@ -38,6 +38,20 @@ type token struct {
 	size   int
 }
 
+type ByLength []*Route
+
+func (b ByLength) Len() int {
+	return len(b)
+}
+
+func (b ByLength) Swap(i int, j int) {
+	b[i], b[j] = b[j], b[i]
+}
+
+func (b ByLength) Less(i int, j int) bool {
+	return b[i].Size < b[j].Size
+}
+
 // pattern content the required information for the route pattern
 // Exist: check if a variable was declare on the route
 // Id: the name of the variable
@@ -84,7 +98,7 @@ func (r *Route) Info() {
 // Check if the request match the route pattern
 func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	if len(path) >= r.Token.size && r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
+	if r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
 		if len(ss) == r.Token.size && ss[r.Token.size-1] != "" {
 			uV := url.Values{}
 			uV.Add(r.pattern.Id, ss[r.pattern.Pos])
