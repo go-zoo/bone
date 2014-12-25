@@ -26,8 +26,7 @@ func homeHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func varHandler(rw http.ResponseWriter, req *http.Request) {
-	val := req.URL.Query().Get("var")
-	rw.Write([]byte(val))
+	rw.Write([]byte(bone.GetValue(req, "var")))
 }
 
 func Handler404(rw http.ResponseWriter, req *http.Request) {

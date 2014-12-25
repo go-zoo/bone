@@ -8,6 +8,14 @@ and custom NotFound handler.
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
 
+## Update
+
+After trying to find a way of using the default url.Query() for route parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
+So now to get the parameters value in your handler, you need to use 
+` bone.GetValue(request, key) ` instead of ` req.Url.Query().Get(key) `.
+This change give a big speed improvement for every kind of application using route parameters, like ~80x faster ...
+Really sorry for breaking things, but i think it's worth it.  
+
 ## Speed
 
 ```

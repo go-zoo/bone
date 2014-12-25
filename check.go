@@ -10,6 +10,7 @@ package bone
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // If no pattern are set in the route.
@@ -40,8 +41,22 @@ func (m *Mux) isStatic(s string) bool {
 	return false
 }
 
+// Debugging function
 func (m *Mux) inspect(meth string) {
 	for i, r := range m.Routes[meth] {
 		fmt.Printf("#%d => %s\n", i+1, r.Path)
 	}
+}
+
+// Insert the url value into the vars stack
+func (r *Route) insert(req *http.Request, uv url.Values) {
+	for k, _ := range uv {
+		r.Pattern.Value[k] = uv.Get(k)
+	}
+	VARS[req] = r
+}
+
+// Return the key value, of the current *http.Request
+func GetValue(req *http.Request, key string) string {
+	return VARS[req].Pattern.Value[key]
 }

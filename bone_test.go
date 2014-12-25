@@ -85,7 +85,7 @@ func TestRoutingVariable(t *testing.T) {
 		w        = httptest.NewRecorder()
 	)
 	mux.Get("/:var", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		got = r.URL.Query().Get("var")
+		got = GetValue(r, "var")
 	}))
 
 	r, err := http.NewRequest("GET", fmt.Sprintf("/%s", expected), nil)
