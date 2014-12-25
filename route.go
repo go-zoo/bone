@@ -98,8 +98,8 @@ func (r *Route) Info() {
 // Check if the request match the route pattern
 func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	if r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
-		if len(ss) == r.Token.size && ss[r.Token.size-1] != "" {
+	if len(ss) == r.Token.size && ss[r.Token.size-1] != "" {
+		if r.Path[:r.pattern.Pos] == path[:r.pattern.Pos] {
 			uV := url.Values{}
 			uV.Add(r.pattern.Id, ss[r.pattern.Pos])
 			return uV, true
@@ -107,6 +107,7 @@ func (r *Route) Match(path string) (url.Values, bool) {
 	}
 	return nil, false
 }
+
 
 // Check if the request respect the route method if provided.
 func (r *Route) MethCheck(req *http.Request) bool {
