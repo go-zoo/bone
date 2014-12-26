@@ -24,18 +24,18 @@ import (
 type Route struct {
 	Path    string
 	Size    int
-	Token   token
+	Token   Token
 	Pattern Pattern
 	handler http.Handler
 	Method  string
 }
 
-// token content all value of a spliting route path
-// tokens: string value of each token
+// Token content all value of a spliting route path
+// Tokens: string value of each token
 // size: number of token
-type token struct {
-	tokens []string
-	size   int
+type Token struct {
+	Tokens []string
+	Size   int
 }
 
 type ByLength []*Route
@@ -49,7 +49,7 @@ func (b ByLength) Swap(i int, j int) {
 }
 
 func (b ByLength) Less(i int, j int) bool {
-	return b[i].Token.size < b[j].Token.size
+	return b[i].Token.Size < b[j].Token.Size
 }
 
 // Pattern content the required information for the route Pattern
@@ -73,8 +73,8 @@ func NewRoute(url string, h http.Handler) *Route {
 
 // Save, set automaticly the the Route.Size and Route.Pattern value
 func (r *Route) save() {
-	r.Token.tokens = strings.Split(r.Path, "/")
-	for i, s := range r.Token.tokens {
+	r.Token.Tokens = strings.Split(r.Path, "/")
+	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
 			if s[:1] == ":" {
 				r.Pattern.Exist = true
@@ -85,7 +85,7 @@ func (r *Route) save() {
 	}
 	r.Pattern.Value = make(map[string]string)
 	r.Size = len(r.Path)
-	r.Token.size = len(r.Token.tokens)
+	r.Token.Size = len(r.Token.Tokens)
 }
 
 // Info is only used for debugging
@@ -101,7 +101,7 @@ func (r *Route) Info() {
 // Check if the request match the route Pattern
 func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	if len(ss) == r.Token.size && ss[r.Token.size-1] != "" {
+	if len(ss) == r.Token.Size && ss[r.Token.Size-1] != "" {
 		if r.Path[:r.Pattern.Pos] == path[:r.Pattern.Pos] {
 			uV := url.Values{}
 			uV.Add(r.Pattern.Id, ss[r.Pattern.Pos])
