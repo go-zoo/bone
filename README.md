@@ -56,6 +56,13 @@ func main () {
   http.ListenAndServe(":8080", mux)
 }
 
+func Handler(rw http.ResponseWriter, req *http.Request) {
+	// Get the value of the "id" parameters.
+	val := bone.GetValue(req, "id")
+
+	rw.Write([]byte(val))
+}
+
 ```
 ## TODO
 
