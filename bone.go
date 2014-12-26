@@ -47,12 +47,12 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
 		if reqPath == r.Path {
-			r.handler.ServeHTTP(rw, req)
+			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Pattern.Exist {
 			if v, ok := r.Match(req.URL.Path); ok {
 				r.insert(req, v)
-				r.handler.ServeHTTP(rw, req)
+				r.Handler.ServeHTTP(rw, req)
 				return
 			}
 			// If no pattern are set in the route.

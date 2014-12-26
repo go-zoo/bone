@@ -26,7 +26,7 @@ type Route struct {
 	Size    int
 	Token   Token
 	Pattern Pattern
-	handler http.Handler
+	Handler http.Handler
 	Method  string
 }
 
@@ -66,7 +66,7 @@ type Pattern struct {
 
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
-	r := &Route{Path: url, handler: h}
+	r := &Route{Path: url, Handler: h}
 	r.save()
 	return r
 }
@@ -172,13 +172,13 @@ func (r Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if r.Method != "" {
 
 		if req.Method == r.Method {
-			r.handler.ServeHTTP(rw, req)
+			r.Handler.ServeHTTP(rw, req)
 		} else {
 			http.NotFound(rw, req)
 		}
 
 	} else {
-		r.handler.ServeHTTP(rw, req)
+		r.Handler.ServeHTTP(rw, req)
 	}
 
 	// DEBUG r.Info()
