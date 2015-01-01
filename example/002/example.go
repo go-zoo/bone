@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/squiidz/bone"
+	"github.com/go-zoo/bone"
 )
 
 func main() {

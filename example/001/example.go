@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/squiidz/bone"
+	"github.com/go-zoo/bone"
 	"log"
 	"net/http"
 )
