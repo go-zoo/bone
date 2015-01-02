@@ -85,4 +85,4 @@ MIT
 
 ## Links
 
-Middleware Chaining module : [Claw](https://github.com/squiidz/claw)
+Middleware Chaining module : [Claw](https://github.com/go-zoo/claw)
