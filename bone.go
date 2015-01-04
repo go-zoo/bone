@@ -9,6 +9,8 @@ package bone
 
 import (
 	"net/http"
+	"time"
+	"log"
 	"sort"
 )
 
@@ -41,6 +43,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Check if the request path doesn't end with /
 	if !valid(reqPath) {
 		http.Redirect(rw, req, reqPath[:reqLen-1], http.StatusMovedPermanently)
+		logger(rw,req)
 		return
 	}
 	// Loop over all the registred route.
@@ -48,11 +51,13 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		// If the route is equal to the request path.
 		if reqPath == r.Path {
 			r.Handler.ServeHTTP(rw, req)
+			logger(rw,req)
 			return
 		} else if r.Pattern.Exist {
 			if v, ok := r.Match(req.URL.Path); ok {
 				r.insert(req, v)
 				r.Handler.ServeHTTP(rw, req)
+				logger(rw,req)
 				return
 			}
 			// If no pattern are set in the route.
@@ -64,11 +69,24 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	for _, s := range m.Static {
 		if reqLen >= s.Size && reqPath[:s.Size] == s.Path {
 			s.ServeHTTP(rw, req)
+			logger(rw,req)
 			return
 		}
 		continue
 	}
+	logger(rw,req)
 	m.BadRequest(rw, req)
+}
+
+// Logger is used to print the access logs with time taken to complete the request(ToDo: Status Code)
+func logger(rw http.ResponseWriter,req *http.Request) {
+	start := time.Now()
+	log.Printf(
+		"%s\t%s\t%s",
+		req.Method,
+		req.RequestURI,
+		time.Since(start),
+		)
 }
 
 // HandleFunc is use to pass a func(http.ResponseWriter, *Http.Request) instead of http.Handler
