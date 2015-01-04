@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/go-zoo/bone"
 	"log"
 	"net/http"
+
+	"github.com/go-zoo/bone"
 )
 
 func main() {
