@@ -44,7 +44,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-		if reqPath == r.Path {
+		if reqPath == r.Path && !r.Pattern.Exist {
 			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Pattern.Exist {
@@ -68,74 +68,70 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	m.BadRequest(rw, req)
 }
 
+// Handle add a new route to the Mux without a HTTP method
+func (m *Mux) Handle(path string, handler http.Handler) {
+	r := NewRoute(path, handler)
+	if m.isStatic(path) {
+		m.Static[path] = r
+		return
+	}
+	for _, mt := range method {
+		m.register(mt, path, handler)
+	}
+}
+
 // HandleFunc is use to pass a func(http.ResponseWriter, *Http.Request) instead of http.Handler
 func (m *Mux) HandleFunc(path string, handler http.HandlerFunc) {
 	m.Handle(path, handler)
 }
 
-// Handle add a new route to the Mux without a HTTP method
-func (m *Mux) Handle(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	if m.isStatic(path) {
-		m.Static[path] = r.Get()
-		return
-	}
-	for _, mt := range method {
-		m.Routes[mt] = append(m.Routes[mt], r)
-		byLength(m.Routes[mt]).Sort()
-	}
-}
-
 // Get add a new route to the Mux with the Get method
 func (m *Mux) Get(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["GET"] = append(m.Routes["GET"], r.Get())
-	byLength(m.Routes["GET"]).Sort()
+	m.register("GET", path, handler)
 }
 
 // Post add a new route to the Mux with the Post method
 func (m *Mux) Post(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["POST"] = append(m.Routes["POST"], r.Post())
-	byLength(m.Routes["POST"]).Sort()
+	m.register("POST", path, handler)
 }
 
 // Put add a new route to the Mux with the Put method
 func (m *Mux) Put(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["PUT"] = append(m.Routes["PUT"], r.Put())
-	byLength(m.Routes["PUT"]).Sort()
+	m.register("PUT", path, handler)
 }
 
 // Delete add a new route to the Mux with the Delete method
 func (m *Mux) Delete(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["DELETE"] = append(m.Routes["DELETE"], r.Delete())
-	byLength(m.Routes["DELETE"]).Sort()
+	m.register("DELETE", path, handler)
 }
 
 // Head add a new route to the Mux with the Head method
 func (m *Mux) Head(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["HEAD"] = append(m.Routes["HEAD"], r.Head())
-	byLength(m.Routes["HEAD"]).Sort()
+	m.register("HEAD", path, handler)
 }
 
 // Patch add a new route to the Mux with the Patch method
 func (m *Mux) Patch(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["PATCH"] = append(m.Routes["PATCH"], r.Patch())
-	byLength(m.Routes["PATCH"]).Sort()
+	m.register("PATCH", path, handler)
 }
 
 // Options add a new route to the Mux with the Options method
 func (m *Mux) Options(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	m.Routes["OPTIONS"] = append(m.Routes["OPTIONS"], r.Options())
-	byLength(m.Routes["OPTIONS"]).Sort()
+	m.register("OPTIONS", path, handler)
 }
 
 // NotFound the mux custom 404 handler
 func (m *Mux) NotFound(handler http.HandlerFunc) {
 	m.notFound = handler
+}
+
+// Register the new route in the router with the provided method and handler
+func (m *Mux) register(method string, path string, handler http.Handler) {
+	if m.valid(path) {
+		r := NewRoute(path, handler)
+		m.Routes[method] = append(m.Routes[method], r)
+		byLength(m.Routes[method]).Sort()
+		return
+	}
+	m.Handle(path, handler)
 }

@@ -13,7 +13,7 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd", nil)
+	request, _ := http.NewRequest("GET", "/aas", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
 
