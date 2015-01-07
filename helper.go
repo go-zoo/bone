@@ -13,8 +13,8 @@ import (
 	"net/url"
 )
 
-// BadRequest handle every wring request.
-func (m *Mux) BadRequest(rw http.ResponseWriter, req *http.Request) {
+// Handle when a request does not match a registered handler.
+func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
 		rw.WriteHeader(http.StatusNotFound)
 		m.notFound(rw, req)

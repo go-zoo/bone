@@ -65,7 +65,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 		continue
 	}
-	m.BadRequest(rw, req)
+	m.HandleNotFound(rw, req)
 }
 
 // Handle add a new route to the Mux without a HTTP method
