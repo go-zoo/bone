@@ -2,7 +2,7 @@
 *** Multiplexer for Go        ***
 *** Bone is under MIT license ***
 *** Code by CodingFerret      ***
-*** github.com/squiidz        ***
+*** github.com/go-zoo         ***
 *********************************/
 
 package bone
@@ -33,18 +33,20 @@ func New() *Mux {
 
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	reqPath := req.URL.Path
-	reqLen := len(reqPath)
 
 	// Check if the request path doesn't end with /
-	if !m.valid(reqPath) {
-		http.Redirect(rw, req, reqPath[:reqLen-1], http.StatusMovedPermanently)
-		return
+	if !m.valid(req.URL.Path) {
+		if key, ok := m.isStatic(req.URL.Path); ok {
+			m.Static[key].Handler.ServeHTTP(rw, req)
+			return
+		}
+		req.URL.Path = req.URL.Path[:len(req.URL.Path)-1]
 	}
+
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-		if reqPath == r.Path && !r.Pattern.Exist {
+		if req.URL.Path == r.Path && !r.Pattern.Exist {
 			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Pattern.Exist {
@@ -58,12 +60,9 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		continue
 	}
 	// If no valid Route found, check for static file
-	for _, s := range m.Static {
-		if reqLen >= s.Size && reqPath[:s.Size] == s.Path {
-			s.Handler.ServeHTTP(rw, req)
-			return
-		}
-		continue
+	if key, ok := m.isStatic(req.URL.Path); ok {
+		m.Static[key].Handler.ServeHTTP(rw, req)
+		return
 	}
 	m.HandleNotFound(rw, req)
 }
@@ -71,7 +70,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 // Handle add a new route to the Mux without a HTTP method
 func (m *Mux) Handle(path string, handler http.Handler) {
 	r := NewRoute(path, handler)
-	if m.isStatic(path) {
+	if !m.valid(path) {
 		m.Static[path] = r
 		return
 	}

@@ -2,7 +2,7 @@
 *** Multiplexer for Go        ***
 *** Bone is under MIT license ***
 *** Code by CodingFerret      ***
-*** github.com/squiidz        ***
+*** github.com/go-zoo         ***
 *********************************/
 
 package bone

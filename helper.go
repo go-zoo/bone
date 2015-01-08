@@ -2,7 +2,7 @@
 *** Multiplexer for Go        ***
 *** Bone is under MIT license ***
 *** Code by CodingFerret      ***
-*** github.com/squiidz        ***
+*** github.com/go-zoo         ***
 *********************************/
 
 package bone
@@ -26,28 +26,21 @@ func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 // Check if the path don't end with a /
 func (m *Mux) valid(path string) bool {
 	plen := len(path)
-	if plen > 1 && path[plen-1:] == "/" && !m.inStatic(path) {
+	if plen > 1 && path[plen-1:] == "/" {
 		return false
 	}
 	return true
 }
 
-func (m *Mux) inStatic(s string) bool {
-	for k := range m.Static {
-		if k == s {
-			return true
+// Check if the request path is for Static route
+func (m *Mux) isStatic(p string) (string, bool) {
+	for k, s := range m.Static {
+		if len(p) >= s.Size && p[:s.Size] == s.Path {
+			return k, true
 		}
+		continue
 	}
-	return false
-}
-
-// Check if the requested route is for a static file
-func (m *Mux) isStatic(s string) bool {
-	sl := len(s)
-	if sl > 1 && s[sl-1:] == "/" {
-		return true
-	}
-	return false
+	return "", false
 }
 
 // Debugging function
