@@ -40,7 +40,12 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			m.Static[key].Handler.ServeHTTP(rw, req)
 			return
 		}
-		req.URL.Path = req.URL.Path[:len(req.URL.Path)-1]
+		for !m.valid(req.URL.Path) {
+			req.URL.Path = req.URL.Path[:len(req.URL.Path)-1]
+		}
+
+		rw.Header().Set("Location", req.URL.Path)
+		rw.WriteHeader(http.StatusFound)
 	}
 
 	// Loop over all the registred route.
