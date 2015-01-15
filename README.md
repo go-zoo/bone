@@ -47,6 +47,7 @@ func main () {
   
   // Method takes http.HandlerFunc
   mux.Get("/home/:id", HomeHandler)
+  mux.Get("/profil/:id/:var", ProfilHandler)
   mux.Post("/data", DataHandler)
 
   // Handle take http.Handler
