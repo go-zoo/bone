@@ -13,7 +13,7 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd/", nil)
+	request, _ := http.NewRequest("GET", "/sd", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
 
@@ -29,7 +29,7 @@ func BenchmarkBoneMux(b *testing.B) {
 
 // Test daryl/zeus ns/op
 func BenchmarkZeusMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd/", nil)
+	request, _ := http.NewRequest("GET", "/sd", nil)
 	response := httptest.NewRecorder()
 	muxx := zeus.New()
 
@@ -45,7 +45,7 @@ func BenchmarkZeusMux(b *testing.B) {
 
 // Test httprouter ns/op
 func BenchmarkHttpRouterMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd/", nil)
+	request, _ := http.NewRequest("GET", "/sd", nil)
 	response := httptest.NewRecorder()
 	muxx := httprouter.New()
 

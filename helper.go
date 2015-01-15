@@ -50,25 +50,18 @@ func (m *Mux) inspect(meth string) {
 	}
 }
 
-// info is only used for debugging
-func (r *Route) info() {
-	fmt.Printf("Path :         %s\n", r.Path)
-	fmt.Printf("Size : 		   %d\n", r.Size)
-	fmt.Printf("Have Pattern : %t\n", r.Pattern.Exist)
-	fmt.Printf("ID :           %s\n", r.Pattern.ID)
-	fmt.Printf("Position :     %d\n", r.Pattern.Pos)
-	fmt.Printf("Method :       %s\n", r.Method)
-}
-
 // Insert the url value into the vars stack
 func (r *Route) insert(req *http.Request, uv url.Values) {
 	for k := range uv {
-		r.Pattern.Value[k] = uv.Get(k)
+		if vars[req] == nil {
+			vars[req] = make(map[string]string)
+		}
+		vars[req][k] = uv.Get(k)
 	}
-	vars[req] = r
+
 }
 
 // GetValue Return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	return vars[req].Pattern.Value[key]
+	return vars[req][key]
 }

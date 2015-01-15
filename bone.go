@@ -20,7 +20,7 @@ type Mux struct {
 
 var (
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
-	vars   = make(map[*http.Request]*Route)
+	vars   = make(map[*http.Request]map[string]string)
 )
 
 // New create a pointer to a Mux instance
@@ -51,10 +51,10 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-		if req.URL.Path == r.Path && !r.Pattern.Exist {
+		if req.URL.Path == r.Path && !r.Params {
 			r.Handler.ServeHTTP(rw, req)
 			return
-		} else if r.Pattern.Exist {
+		} else if r.Params {
 			if v, ok := r.Match(req.URL.Path); ok {
 				r.insert(req, v)
 				r.Handler.ServeHTTP(rw, req)

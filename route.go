@@ -25,7 +25,8 @@ type Route struct {
 	Path    string
 	Size    int
 	Token   Token
-	Pattern Pattern
+	Params  bool
+	Pattern map[int]Pattern
 	Handler http.Handler
 	Method  string
 }
@@ -62,10 +63,8 @@ func (b byLength) Sort() {
 // Pos: postition of var in the route path
 // Value: is the value of the request parameters
 type Pattern struct {
-	Exist bool
-	ID    string
-	Pos   int
-	Value map[string]string
+	ID  string
+	Pos int
 }
 
 // NewRoute return a pointer to a Route instance and call save() on it
@@ -79,14 +78,16 @@ func NewRoute(url string, h http.Handler) *Route {
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
+	r.Pattern = make(map[int]Pattern)
 
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
 			if s[:1] == ":" {
-				r.Pattern.Exist = true
-				r.Pattern.ID = s[1:]
-				r.Pattern.Pos = i
-				r.Pattern.Value = make(map[string]string)
+				r.Pattern[i] = Pattern{
+					ID:  s[1:],
+					Pos: i,
+				}
+				r.Params = true
 			}
 		}
 		r.Token.Size++
@@ -96,14 +97,19 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
+	uV := url.Values{}
+	exists := false
+
 	if len(ss) == r.Token.Size && ss[r.Token.Size-1] != "" {
-		if r.Path[:r.Pattern.Pos] == path[:r.Pattern.Pos] {
-			uV := url.Values{}
-			uV.Add(r.Pattern.ID, ss[r.Pattern.Pos])
-			return uV, true
+		for k, _ := range r.Pattern {
+			if r.Path[:r.Pattern[k].Pos] == path[:r.Pattern[k].Pos] {
+				uV.Add(r.Pattern[k].ID, ss[r.Pattern[k].Pos])
+				exists = true
+			}
 		}
 	}
-	return nil, false
+
+	return uV, exists
 }
 
 // Get set the route method to Get

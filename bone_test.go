@@ -77,28 +77,6 @@ func TestRoutingPath(t *testing.T) {
 	}
 }
 
-func TestRoutingVariable(t *testing.T) {
-	var (
-		expected = "variable"
-		got      string
-		mux      = New()
-		w        = httptest.NewRecorder()
-	)
-	mux.Get("/:var", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		got = GetValue(r, "var")
-	}))
-
-	r, err := http.NewRequest("GET", fmt.Sprintf("/%s", expected), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	mux.ServeHTTP(w, r)
-
-	if got != expected {
-		t.Fatalf("expected %s, got %s", expected, got)
-	}
-}
-
 func TestRoutingVerbs(t *testing.T) {
 	var (
 		methods = []string{"DELETE", "GET", "HEAD", "PUT", "POST", "PATCH", "OPTIONS", "HEAD"}
@@ -153,5 +131,56 @@ func TestRoutingSlash(t *testing.T) {
 
 	if !call {
 		t.Error("root not serve")
+	}
+}
+
+func TestMultipleRoutingVariables(t *testing.T) {
+	var (
+		expected1 = "variable1"
+		expected2 = "variable2"
+		got1      string
+		got2      string
+		mux       = New()
+		w         = httptest.NewRecorder()
+	)
+	mux.Get("/test/:var1/:var2", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got1 = GetValue(r, "var1")
+		got2 = GetValue(r, "var2")
+	}))
+
+	r, err := http.NewRequest("GET", fmt.Sprintf("/test/%s/%s", expected1, expected2), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux.ServeHTTP(w, r)
+
+	if got1 != expected1 {
+		t.Fatalf("expected %s, got %s", expected1, got1)
+	}
+
+	if got2 != expected2 {
+		t.Fatalf("expected %s, got %s", expected2, got2)
+	}
+}
+
+func TestRoutingVariable(t *testing.T) {
+	var (
+		expected = "variable"
+		got      string
+		mux      = New()
+		w        = httptest.NewRecorder()
+	)
+	mux.Get("/:vartest", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = GetValue(r, "vartest")
+	}))
+
+	r, err := http.NewRequest("GET", fmt.Sprintf("/%s", expected), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux.ServeHTTP(w, r)
+
+	if got != expected {
+		t.Fatalf("expected %s, got %s", expected, got)
 	}
 }
