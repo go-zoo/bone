@@ -70,7 +70,6 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 - More Testing
 - Debugging
 - Optimisation
-- Refactoring
 
 ## Contributing
 
