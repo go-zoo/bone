@@ -74,11 +74,6 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 // Handle add a new route to the Mux without a HTTP method
 func (m *Mux) Handle(path string, handler http.Handler) {
-	r := NewRoute(path, handler)
-	if !m.valid(path) {
-		m.Static[path] = r
-		return
-	}
 	for _, mt := range method {
 		m.register(mt, path, handler)
 	}
@@ -131,11 +126,11 @@ func (m *Mux) NotFound(handler http.HandlerFunc) {
 
 // Register the new route in the router with the provided method and handler
 func (m *Mux) register(method string, path string, handler http.Handler) {
+	r := NewRoute(path, handler)
 	if m.valid(path) {
-		r := NewRoute(path, handler)
 		m.Routes[method] = append(m.Routes[method], r)
 		byLength(m.Routes[method]).Sort()
 		return
 	}
-	m.Handle(path, handler)
+	m.Static[path] = r
 }

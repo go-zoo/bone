@@ -184,3 +184,19 @@ func TestRoutingVariable(t *testing.T) {
 		t.Fatalf("expected %s, got %s", expected, got)
 	}
 }
+
+func TestStaticFile(t *testing.T) {
+	var data string
+	mux := New()
+	mux.Get("/file/", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		data = "DATA"
+	}))
+
+	r, _ := http.NewRequest("GET", "/file/", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if data != "DATA" {
+		t.Error("Data not serve")
+	}
+}

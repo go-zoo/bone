@@ -12,7 +12,7 @@ func main() {
 
 	mux.Get("/", http.HandlerFunc(defaultHandler))
 	mux.Get("/test", http.HandlerFunc(defaultHandler))
-	mux.Handle("/file/", http.StripPrefix("/file/", http.FileServer(http.Dir("assets"))))
+	mux.Get("/file/", http.StripPrefix("/file/", http.FileServer(http.Dir("assets"))))
 
 	http.ListenAndServe(":8080", mux)
 }
