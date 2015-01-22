@@ -162,3 +162,15 @@ func (r *Route) Options() *Route {
 	r.Method = "OPTIONS"
 	return r
 }
+
+func (r *Route) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	if r.Method != "" {
+		if req.Method == r.Method {
+			r.Handler.ServeHTTP(rw, req)
+			return
+		}
+		http.NotFound(rw, req)
+		return
+	}
+	r.Handler.ServeHTTP(rw, req)
+}
