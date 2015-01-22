@@ -30,8 +30,12 @@ func homeHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func varHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Println("VAR = ", bone.GetValue(req, "var"))
-	log.Println("TEST = ", bone.GetValue(req, "test"))
+	varr := bone.GetValue(req, "var")
+	test := bone.GetValue(req, "test")
+	log.Println("VAR = ", varr)
+	log.Println("TEST = ", test)
+
+	rw.Write([]byte(varr + " " + test))
 }
 
 func Handler404(rw http.ResponseWriter, req *http.Request) {

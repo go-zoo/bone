@@ -88,10 +88,19 @@ func (r *Route) save() {
 					Pos: i,
 				}
 				r.Params = true
+				r.Handler = clean(r.Handler)
 			}
 		}
 		r.Token.Size++
 	}
+}
+
+// Clean request value from the vars stack
+func clean(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		next.ServeHTTP(rw, req)
+		delete(vars, req)
+	})
 }
 
 // Match check if the request match the route Pattern

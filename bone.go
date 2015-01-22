@@ -60,9 +60,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				r.Handler.ServeHTTP(rw, req)
 				return
 			}
-			continue
 		}
-		continue
 	}
 	// If no valid Route found, check for static file
 	if key, ok := m.isStatic(req.URL.Path); ok {
