@@ -200,3 +200,37 @@ func TestStaticFile(t *testing.T) {
 		t.Error("Data not serve")
 	}
 }
+
+func TestStandAloneRoute(t *testing.T) {
+	valid := false
+	mux := http.NewServeMux()
+
+	testRoute := NewRoute("/test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	}))
+	mux.Handle("/test", testRoute.Get())
+	r, _ := http.NewRequest("GET", "/test", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !valid {
+		t.Error("Route Handler not call")
+	}
+}
+
+func TestReqValueDel(t *testing.T) {
+	var arg string
+	mux := New()
+
+	mux.Get("/test/:test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		arg = GetValue(req, "test")
+	}))
+
+	r, _ := http.NewRequest("GET", "/test/bone", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if len(vars) != 0 || arg != "bone" {
+		t.Error("Request value not deleted")
+	}
+}
