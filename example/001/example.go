@@ -32,7 +32,6 @@ func homeHandler(rw http.ResponseWriter, req *http.Request) {
 func varHandler(rw http.ResponseWriter, req *http.Request) {
 	varr := bone.GetValue(req, "var")
 	test := bone.GetValue(req, "test")
-	log.Println("From Moule")
 	log.Println("VAR = ", varr)
 	log.Println("TEST = ", test)
 
