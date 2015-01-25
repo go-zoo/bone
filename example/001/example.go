@@ -14,7 +14,7 @@ func main() {
 	mux.NotFound(Handler404)
 	// Handle with any http method, Handle takes http.Handler as argument.
 	mux.Handle("/index", http.HandlerFunc(homeHandler))
-	mux.Handle("/index/:var/:test", http.HandlerFunc(varHandler))
+	mux.Handle("/index/:var/info/:test", http.HandlerFunc(varHandler))
 	// Get, Post etc... takes http.HandlerFunc as argument.
 	mux.Post("/home", http.HandlerFunc(homeHandler))
 	mux.Get("/home/:var", http.HandlerFunc(varHandler))
@@ -32,6 +32,7 @@ func homeHandler(rw http.ResponseWriter, req *http.Request) {
 func varHandler(rw http.ResponseWriter, req *http.Request) {
 	varr := bone.GetValue(req, "var")
 	test := bone.GetValue(req, "test")
+	log.Println("From Moule")
 	log.Println("VAR = ", varr)
 	log.Println("TEST = ", test)
 

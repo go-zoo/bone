@@ -35,8 +35,9 @@ type Route struct {
 // Tokens: string value of each token
 // size: number of token
 type Token struct {
-	Tokens []string
-	Size   int
+	rawTokens map[int]string
+	Tokens    []string
+	Size      int
 }
 
 type byLength []*Route
@@ -79,6 +80,7 @@ func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
 	r.Pattern = make(map[int]Pattern)
+	r.Token.rawTokens = make(map[int]string)
 
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
@@ -89,6 +91,8 @@ func (r *Route) save() {
 				}
 				r.Params = true
 				r.Handler = clean(r.Handler)
+			} else {
+				r.Token.rawTokens[i] = s
 			}
 		}
 		r.Token.Size++
@@ -106,19 +110,24 @@ func clean(next http.Handler) http.Handler {
 // Match check if the request match the route Pattern
 func (r *Route) Match(path string) (url.Values, bool) {
 	ss := strings.Split(path, "/")
-	uV := url.Values{}
+	uv := url.Values{}
 	exists := false
 
 	if len(ss) == r.Token.Size && ss[r.Token.Size-1] != "" {
-		for k, _ := range r.Pattern {
-			if r.Path[:r.Pattern[k].Pos] == path[:r.Pattern[k].Pos] {
-				uV.Add(r.Pattern[k].ID, ss[r.Pattern[k].Pos])
-				exists = true
+		for k, v := range r.Token.rawTokens {
+			if ss[k] == v {
+				continue
+			} else {
+				return uv, exists
 			}
+		}
+		for k, _ := range r.Pattern {
+			uv.Add(r.Pattern[k].ID, ss[r.Pattern[k].Pos])
+			exists = true
 		}
 	}
 
-	return uV, exists
+	return uv, exists
 }
 
 // Get set the route method to Get
