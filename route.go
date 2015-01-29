@@ -9,7 +9,6 @@ package bone
 
 import (
 	"net/http"
-	"net/url"
 	"sort"
 	"strings"
 )
@@ -90,7 +89,6 @@ func (r *Route) save() {
 					Pos: i,
 				}
 				r.Params = true
-				r.Handler = clean(r.Handler)
 			} else {
 				r.Token.rawTokens[i] = s
 			}
@@ -99,35 +97,23 @@ func (r *Route) save() {
 	}
 }
 
-// Clean request value from the vars stack
-func clean(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		next.ServeHTTP(rw, req)
-		delete(vars, req)
-	})
-}
-
 // Match check if the request match the route Pattern
-func (r *Route) Match(path string) (url.Values, bool) {
+func (r *Route) Match(path string) bool {
 	ss := strings.Split(path, "/")
-	uv := url.Values{}
-	exists := false
 
-	if len(ss) == r.Token.Size && ss[r.Token.Size-1] != "" {
+	if len(ss) == r.Token.Size {
 		for k, v := range r.Token.rawTokens {
-			if ss[k] == v {
-				continue
-			} else {
-				return uv, exists
+			if ss[k] != v {
+				return false
 			}
 		}
 		for k, _ := range r.Pattern {
-			uv.Add(r.Pattern[k].ID, ss[r.Pattern[k].Pos])
-			exists = true
+			pk := r.Pattern[k]
+			vars[pk.ID] = ss[pk.Pos]
 		}
+		return true
 	}
-
-	return uv, exists
+	return false
 }
 
 // Get set the route method to Get

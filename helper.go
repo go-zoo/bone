@@ -8,9 +8,7 @@
 package bone
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
 )
 
 // Handle when a request does not match a registered handler.
@@ -43,25 +41,7 @@ func (m *Mux) isStatic(p string) (string, bool) {
 	return "", false
 }
 
-// Debugging function
-func (m *Mux) inspect(meth string) {
-	for i, r := range m.Routes[meth] {
-		fmt.Printf("#%d => %s\n", i+1, r.Path)
-	}
-}
-
-// Insert the url value into the vars stack
-func (r *Route) insert(req *http.Request, uv url.Values) {
-	for k := range uv {
-		if vars[req] == nil {
-			vars[req] = make(map[string]string)
-		}
-		vars[req][k] = uv.Get(k)
-	}
-
-}
-
 // GetValue Return the key value, of the current *http.Request
-func GetValue(req *http.Request, key string) string {
-	return vars[req][key]
+func GetValue(key string) string {
+	return vars[key]
 }

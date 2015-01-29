@@ -20,7 +20,7 @@ type Mux struct {
 
 var (
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
-	vars   = make(map[*http.Request]map[string]string)
+	vars   = make(map[string]string)
 )
 
 // New create a pointer to a Mux instance
@@ -33,7 +33,6 @@ func New() *Mux {
 
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-
 	// Check if the request path doesn't end with /
 	if !m.valid(req.URL.Path) {
 		if key, ok := m.isStatic(req.URL.Path); ok {
@@ -47,7 +46,6 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Location", req.URL.Path)
 		rw.WriteHeader(http.StatusFound)
 	}
-
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
@@ -55,8 +53,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Params {
-			if v, ok := r.Match(req.URL.Path); ok {
-				r.insert(req, v)
+			if ok := r.Match(req.URL.Path); ok {
 				r.Handler.ServeHTTP(rw, req)
 				return
 			}
