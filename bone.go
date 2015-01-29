@@ -55,6 +55,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		} else if r.Params {
 			if ok := r.Match(req); ok {
 				r.Handler.ServeHTTP(rw, req)
+				delete(vars, req)
 				return
 			}
 		}
