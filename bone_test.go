@@ -144,8 +144,8 @@ func TestMultipleRoutingVariables(t *testing.T) {
 		w         = httptest.NewRecorder()
 	)
 	mux.Get("/test/:var1/:var2", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		got1 = GetValue("var1")
-		got2 = GetValue("var2")
+		got1 = GetValue(r, "var1")
+		got2 = GetValue(r, "var2")
 	}))
 
 	r, err := http.NewRequest("GET", fmt.Sprintf("/test/%s/%s", expected1, expected2), nil)
@@ -171,7 +171,7 @@ func TestRoutingVariable(t *testing.T) {
 		w        = httptest.NewRecorder()
 	)
 	mux.Get("/:vartest", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		got = GetValue("vartest")
+		got = GetValue(r, "vartest")
 	}))
 
 	r, err := http.NewRequest("GET", fmt.Sprintf("/%s", expected), nil)

@@ -10,14 +10,13 @@ and custom NotFound handler.
 
 ## Update 29 january 2015
 
-GetValue() no longer need a *http.Request ``` bone.GetValue("key") ```
-Plus another speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 530 ns/op ```. 
+Speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```. 
 
 ## Update 25 december 2014
 
 After trying to find a way of using the default url.Query() for route parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
 So now to get the parameters value in your handler, you need to use 
-` bone.GetValue(key) ` instead of ` req.Url.Query().Get(key) `.
+` bone.GetValue(req, key) ` instead of ` req.Url.Query().Get(key) `.
 This change give a big speed improvement for every kind of application using route parameters, like ~80x faster ...
 Really sorry for breaking things, but i think it's worth it.  
 
@@ -63,7 +62,7 @@ func main () {
 
 func Handler(rw http.ResponseWriter, req *http.Request) {
 	// Get the value of the "id" parameters.
-	val := bone.GetValue("id")
+	val := bone.GetValue(req, "id")
 
 	rw.Write([]byte(val))
 }
