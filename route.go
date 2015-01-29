@@ -25,7 +25,7 @@ type Route struct {
 	Size    int
 	Token   Token
 	Params  bool
-	Pattern map[int]Pattern
+	Pattern map[int]string
 	Handler http.Handler
 	Method  string
 }
@@ -34,9 +34,9 @@ type Route struct {
 // Tokens: string value of each token
 // size: number of token
 type Token struct {
-	rawTokens map[int]string
-	Tokens    []string
-	Size      int
+	raw    []int
+	Tokens []string
+	Size   int
 }
 
 type byLength []*Route
@@ -57,16 +57,6 @@ func (b byLength) Sort() {
 	sort.Sort(b)
 }
 
-// Pattern content the required information for the route Pattern
-// Exist: check if a variable was declare on the route
-// ID: the name of the variable
-// Pos: postition of var in the route path
-// Value: is the value of the request parameters
-type Pattern struct {
-	ID  string
-	Pos int
-}
-
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
 	r := &Route{Path: url, Handler: h}
@@ -78,19 +68,15 @@ func NewRoute(url string, h http.Handler) *Route {
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
-	r.Pattern = make(map[int]Pattern)
-	r.Token.rawTokens = make(map[int]string)
+	r.Pattern = make(map[int]string)
 
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
 			if s[:1] == ":" {
-				r.Pattern[i] = Pattern{
-					ID:  s[1:],
-					Pos: i,
-				}
+				r.Pattern[i] = s[1:]
 				r.Params = true
 			} else {
-				r.Token.rawTokens[i] = s
+				r.Token.raw = append(r.Token.raw, i)
 			}
 		}
 		r.Token.Size++
@@ -102,14 +88,13 @@ func (r *Route) Match(path string) bool {
 	ss := strings.Split(path, "/")
 
 	if len(ss) == r.Token.Size {
-		for k, v := range r.Token.rawTokens {
-			if ss[k] != v {
+		for _, v := range r.Token.raw {
+			if ss[v] != r.Token.Tokens[v] {
 				return false
 			}
 		}
-		for k, _ := range r.Pattern {
-			pk := r.Pattern[k]
-			vars[pk.ID] = ss[pk.Pos]
+		for k, v := range r.Pattern {
+			vars[v] = ss[k]
 		}
 		return true
 	}
