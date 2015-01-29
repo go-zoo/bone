@@ -11,7 +11,7 @@ and custom NotFound handler.
 ## Update 29 january 2015
 
 GetValue() no longer need a *http.Request ``` bone.GetValue("key") ```
-Plus another speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 580 ns/op ```. 
+Plus another speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 530 ns/op ```. 
 
 ## Update 25 december 2014
 

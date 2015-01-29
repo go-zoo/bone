@@ -9,7 +9,6 @@ package bone
 
 import (
 	"net/http"
-	"sort"
 	"strings"
 )
 
@@ -37,24 +36,6 @@ type Token struct {
 	raw    []int
 	Tokens []string
 	Size   int
-}
-
-type byLength []*Route
-
-func (b byLength) Len() int {
-	return len(b)
-}
-
-func (b byLength) Swap(i int, j int) {
-	b[i], b[j] = b[j], b[i]
-}
-
-func (b byLength) Less(i int, j int) bool {
-	return b[i].Token.Size < b[j].Token.Size
-}
-
-func (b byLength) Sort() {
-	sort.Sort(b)
 }
 
 // NewRoute return a pointer to a Route instance and call save() on it

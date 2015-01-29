@@ -124,7 +124,6 @@ func (m *Mux) register(method string, path string, handler http.Handler) {
 	r := NewRoute(path, handler)
 	if m.valid(path) {
 		m.Routes[method] = append(m.Routes[method], r)
-		byLength(m.Routes[method]).Sort()
 		return
 	}
 	m.Static[path] = r
