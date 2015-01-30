@@ -49,7 +49,7 @@ import(
 func main () {
   mux := bone.New()
   
-  // Method takes http.HandlerFunc
+  // mux.Get, Post, etc ... takes http.Handler
   mux.Get("/home/:id", HomeHandler)
   mux.Get("/profil/:id/:var", ProfilHandler)
   mux.Post("/data", DataHandler)
