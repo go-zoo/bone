@@ -90,3 +90,7 @@ MIT
 ## Links
 
 Middleware Chaining module : [Claw](https://github.com/go-zoo/claw)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/go-zoo/bone/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
