@@ -1,6 +1,5 @@
-/*
 package bone
-
+/*
 import (
 	"net/http"
 	"net/http/httptest"
@@ -129,7 +128,7 @@ func Bench(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte("b"))
 }
 
-/*			### Result ###
+			### Result ###
 
 BenchmarkBoneMux				10000000	       124 ns/op
 BenchmarkHttpRouterMux			10000000	       147 ns/op
