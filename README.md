@@ -3,19 +3,20 @@ bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://god
 
 ## What is bone ?
 
-Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables, http method declaration
+Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables with regex parameters, Http method declaration
 and custom NotFound handler.
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
 
 ## Update 26 April 2015
 
-Add Support for regex parameters, using ``` # ``` instead of ``` : ```.
+- Add Support for regex parameters, using ` # ` instead of ` : `.
+- Add Mux method ` mux.GetFunc(), mux.PostFunc(), etc ... `, takes ` http.HandlerFunc ` instead of ` http.Handler `.
 
 Example : 
 ``` go
 func main() {
-    mux.Get("/route/#var^[a-z]$", handler) 
+    mux.GetFunc("/route/#var^[a-z]$", handler) 
 }
 
 func handler(rw http.ResponseWriter, req *http.Request) {
@@ -25,7 +26,7 @@ func handler(rw http.ResponseWriter, req *http.Request) {
 
 ## Update 29 january 2015
 
-Speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```. 
+- Speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```. 
 
 ## Update 25 december 2014
 
@@ -68,6 +69,9 @@ func main () {
   mux.Get("/home/:id", HomeHandler)
   mux.Get("/profil/:id/:var", ProfilHandler)
   mux.Post("/data", DataHandler)
+
+  // Support Regex Route params
+  mux.Get("/index/#id^[0-9]$", IndexHandler)
 
   // Handle take http.Handler
   mux.Handle("/", http.HandlerFunc(RootHandler))

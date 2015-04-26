@@ -10,9 +10,9 @@ import (
 func main() {
 	mux := bone.New()
 
-	mux.Get("/", http.HandlerFunc(defaultHandler))
-	mux.Get("/reg/#var^[a-z]$/#var2^[0-9]$", http.HandlerFunc(ShowVar))
-	mux.Get("/test", http.HandlerFunc(defaultHandler))
+	mux.GetFunc("/", defaultHandler)
+	mux.GetFunc("/reg/#var^[a-z]$/#var2^[0-9]$", ShowVar)
+	mux.GetFunc("/test", defaultHandler)
 	mux.Get("/file/", http.StripPrefix("/file/", http.FileServer(http.Dir("assets"))))
 
 	http.ListenAndServe(":8080", mux)

@@ -129,7 +129,7 @@ func Bench(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte("b"))
 }
 
-
+/*
 			### Result ###
 
 BenchmarkBoneMux				10000000	       124 ns/op

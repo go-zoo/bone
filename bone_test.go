@@ -27,7 +27,7 @@ func TestRouting(t *testing.T) {
 // Test the custom not handler handler sets 404 error code
 func TestNotFoundCustomHandlerSends404(t *testing.T) {
 	mux := New()
-	mux.NotFound(func(rw http.ResponseWriter, req *http.Request) {
+	mux.NotFoundFunc(func(rw http.ResponseWriter, req *http.Request) {
 		rw.Write([]byte("These are not the droids you're looking for ..."))
 	})
 

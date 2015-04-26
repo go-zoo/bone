@@ -15,7 +15,7 @@ import "net/http"
 type Mux struct {
 	Routes   map[string][]*Route
 	Static   map[string]*Route
-	notFound http.HandlerFunc
+	notFound http.Handler
 }
 
 var (
@@ -116,7 +116,7 @@ func (m *Mux) Options(path string, handler http.Handler) {
 }
 
 // NotFound the mux custom 404 handler
-func (m *Mux) NotFound(handler http.HandlerFunc) {
+func (m *Mux) NotFound(handler http.Handler) {
 	m.notFound = handler
 }
 

@@ -15,7 +15,7 @@ import (
 func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
 		rw.WriteHeader(http.StatusNotFound)
-		m.notFound(rw, req)
+		m.notFound.ServeHTTP(rw, req)
 	} else {
 		http.NotFound(rw, req)
 	}
