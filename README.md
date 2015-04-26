@@ -8,6 +8,12 @@ and custom NotFound handler.
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
 
+## Update 26 April 2015
+
+Add Support for regex parameters, using ``` # ``` instead of ``` : ```.
+
+Example : ``` mux.Get("/route/#^[a-z]$", handler) ``` 
+
 ## Update 29 january 2015
 
 Speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```. 
@@ -61,10 +67,10 @@ func main () {
 }
 
 func Handler(rw http.ResponseWriter, req *http.Request) {
-	// Get the value of the "id" parameters.
-	val := bone.GetValue(req, "id")
+  // Get the value of the "id" parameters.
+  val := bone.GetValue(req, "id")
 
-	rw.Write([]byte(val))
+  rw.Write([]byte(val))
 }
 
 ```

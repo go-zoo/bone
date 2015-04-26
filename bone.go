@@ -52,7 +52,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		if req.URL.Path == r.Path && !r.Params {
 			r.Handler.ServeHTTP(rw, req)
 			return
-		} else if r.Params {
+		} else if r.Params || r.Regex {
 			if ok := r.Match(req); ok {
 				r.Handler.ServeHTTP(rw, req)
 				delete(vars, req)

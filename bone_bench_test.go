@@ -1,4 +1,5 @@
 package bone
+
 /*
 import (
 	"net/http"
@@ -127,6 +128,7 @@ func BenchmarkGorillaPatMux(b *testing.B) {
 func Bench(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte("b"))
 }
+
 
 			### Result ###
 

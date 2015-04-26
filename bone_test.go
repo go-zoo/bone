@@ -217,3 +217,37 @@ func TestStandAloneRoute(t *testing.T) {
 		t.Error("Route Handler not call")
 	}
 }
+
+func TestRegexParam(t *testing.T) {
+	valid := false
+	mux := New()
+
+	mux.Get("/regex/#^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/regex/test", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !valid {
+		t.Error("Route Handler not call")
+	}
+}
+
+func TestRegexParam2(t *testing.T) {
+	valid := false
+	mux := New()
+
+	mux.Get("/regex/#^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/regex/1234", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if valid {
+		t.Error("Regex params not valid !")
+	}
+}

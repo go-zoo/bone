@@ -9,6 +9,7 @@ package bone
 
 import (
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -25,6 +26,8 @@ type Route struct {
 	Token   Token
 	Params  bool
 	Pattern map[int]string
+	Regex   bool
+	Compile map[int]*regexp.Regexp
 	Handler http.Handler
 	Method  string
 }
@@ -49,13 +52,21 @@ func NewRoute(url string, h http.Handler) *Route {
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
-	r.Pattern = make(map[int]string)
 
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
 			if s[:1] == ":" {
+				if !r.Params {
+					r.Pattern = make(map[int]string)
+				}
 				r.Pattern[i] = s[1:]
 				r.Params = true
+			} else if s[:1] == "#" {
+				if !r.Regex {
+					r.Compile = make(map[int]*regexp.Regexp)
+				}
+				r.Compile[i] = regexp.MustCompile(s[1 : len(s)-1])
+				r.Regex = true
 			} else {
 				r.Token.raw = append(r.Token.raw, i)
 			}
@@ -67,7 +78,6 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
-
 	if len(ss) == r.Token.Size {
 		for _, v := range r.Token.raw {
 			if ss[v] != r.Token.Tokens[v] {
@@ -75,8 +85,18 @@ func (r *Route) Match(req *http.Request) bool {
 			}
 		}
 		vars[req] = map[string]string{}
-		for k, v := range r.Pattern {
-			vars[req][v] = ss[k]
+		if r.Regex {
+			for k, v := range r.Compile {
+				if v.MatchString(ss[k]) {
+					vars[req]["#"] = ss[k]
+				} else {
+					return false
+				}
+			}
+		} else {
+			for k, v := range r.Pattern {
+				vars[req][v] = ss[k]
+			}
 		}
 		return true
 	}
