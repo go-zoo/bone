@@ -13,7 +13,7 @@ and custom NotFound handler.
 Add Support for regex parameters, using ``` # ``` instead of ``` : ```.
 
 Example : 
-```
+``` go
 func main() {
     mux.Get("/route/#var^[a-z]$", handler) 
 }
