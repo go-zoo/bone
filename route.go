@@ -27,7 +27,7 @@ type Route struct {
 	Params  bool
 	Pattern map[int]string
 	Regex   bool
-	Tag     string
+	Tag     map[int]string
 	Compile map[int]*regexp.Regexp
 	Handler http.Handler
 	Method  string
@@ -65,9 +65,10 @@ func (r *Route) save() {
 			} else if s[:1] == "#" {
 				if !r.Regex {
 					r.Compile = make(map[int]*regexp.Regexp)
+					r.Tag = make(map[int]string)
 				}
 				tmp := strings.Split(s, "^")
-				r.Tag = tmp[0][1:]
+				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Regex = true
 			} else {
@@ -91,7 +92,7 @@ func (r *Route) Match(req *http.Request) bool {
 		if r.Regex {
 			for k, v := range r.Compile {
 				if v.MatchString(ss[k]) {
-					vars[req][r.Tag] = ss[k]
+					vars[req][r.Tag[k]] = ss[k]
 				} else {
 					return false
 				}

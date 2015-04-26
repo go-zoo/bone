@@ -11,7 +11,7 @@ func main() {
 	mux := bone.New()
 
 	mux.Get("/", http.HandlerFunc(defaultHandler))
-	mux.Get("/reg/#var^[a-z]$", http.HandlerFunc(ShowVar))
+	mux.Get("/reg/#var^[a-z]$/#var2^[0-9]$", http.HandlerFunc(ShowVar))
 	mux.Get("/test", http.HandlerFunc(defaultHandler))
 	mux.Get("/file/", http.StripPrefix("/file/", http.FileServer(http.Dir("assets"))))
 
@@ -24,5 +24,5 @@ func defaultHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func ShowVar(rw http.ResponseWriter, req *http.Request) {
-	rw.Write([]byte(bone.GetValue(req, "var")))
+	rw.Write([]byte(bone.GetValue(req, "var") + " - " + bone.GetValue(req, "var2")))
 }
