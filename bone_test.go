@@ -222,7 +222,7 @@ func TestRegexParam(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/regex/#ttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
@@ -239,7 +239,7 @@ func TestRegexParam2(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/regex/#tttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
@@ -249,5 +249,39 @@ func TestRegexParam2(t *testing.T) {
 
 	if valid {
 		t.Error("Regex params not valid !")
+	}
+}
+
+func TestRegexParamMutli(t *testing.T) {
+	valid := false
+	mux := New()
+
+	mux.Get("/regex/#ttt^[a-z]$/#yyy^[0-9]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/regex/first/2", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !valid {
+		t.Error("Regex multi params not valid !")
+	}
+}
+
+func TestMultiParams(t *testing.T) {
+	valid := false
+	mux := New()
+
+	mux.Get("/regex/#num^[a-z]$/:test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/regex/first/second", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !valid {
+		t.Error("Regex multi params not valid !")
 	}
 }
