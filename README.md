@@ -12,7 +12,16 @@ and custom NotFound handler.
 
 Add Support for regex parameters, using ``` # ``` instead of ``` : ```.
 
-Example : ``` mux.Get("/route/#^[a-z]$", handler) ``` 
+Example : 
+```
+func main() {
+    mux.Get("/route/#var^[a-z]$", handler) 
+}
+
+func handler(rw http.ResponseWriter, req *http.Request) {
+    bone.GetValue(req, "var")
+}
+``` 
 
 ## Update 29 january 2015
 
