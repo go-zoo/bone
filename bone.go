@@ -34,15 +34,13 @@ func New() *Mux {
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Check if the request path doesn't end with /
-	if !m.valid(req.URL.Path) {
+	if !valid(req.URL.Path) {
 		if key, ok := m.isStatic(req.URL.Path); ok {
 			m.Static[key].Handler.ServeHTTP(rw, req)
 			return
 		}
-		for !m.valid(req.URL.Path) {
-			req.URL.Path = req.URL.Path[:len(req.URL.Path)-1]
-		}
 
+		req.URL.Path = cleanUrl(req.URL.Path)
 		rw.Header().Set("Location", req.URL.Path)
 		rw.WriteHeader(http.StatusFound)
 	}
@@ -123,7 +121,7 @@ func (m *Mux) NotFound(handler http.Handler) {
 // Register the new route in the router with the provided method and handler
 func (m *Mux) register(method string, path string, handler http.Handler) {
 	r := NewRoute(path, handler)
-	if m.valid(path) {
+	if valid(path) {
 		m.Routes[method] = append(m.Routes[method], r)
 		return
 	}
