@@ -1,5 +1,5 @@
 package bone
-
+/*
 import (
 	"net/http"
 	"net/http/httptest"
