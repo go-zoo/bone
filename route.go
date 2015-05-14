@@ -97,10 +97,9 @@ func (r *Route) Match(req *http.Request) bool {
 					return false
 				}
 			}
-		} else {
-			for k, v := range r.Pattern {
-				vars[req][v] = ss[k]
-			}
+		}
+		for k, v := range r.Pattern {
+			vars[req][v] = ss[k]
 		}
 		return true
 	}
