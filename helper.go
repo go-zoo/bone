@@ -52,5 +52,8 @@ func (m *Mux) isStatic(p string) (string, bool) {
 
 // GetValue Return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	return vars[req][key]
+	vars.RLock()
+	value := vars.m[req][key]
+	vars.RUnlock()
+	return value
 }
