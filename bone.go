@@ -7,7 +7,10 @@
 
 package bone
 
-import "net/http"
+import (
+	"net/http"
+	"sync"
+)
 
 // Mux have routes and a notFound handler
 // Route: all the registred route
@@ -20,7 +23,10 @@ type Mux struct {
 
 var (
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
-	vars   = make(map[*http.Request]map[string]string)
+	vars   = struct{
+		sync.RWMutex
+		m map[*http.Request]map[string]string
+	}{m: make(map[*http.Request]map[string]string)}
 )
 
 // New create a pointer to a Mux instance
@@ -53,7 +59,9 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		} else if r.Params || r.Regex {
 			if ok := r.Match(req); ok {
 				r.Handler.ServeHTTP(rw, req)
-				delete(vars, req)
+				vars.Lock()
+				delete(vars.m, req)
+				vars.Unlock()
 				return
 			}
 		}

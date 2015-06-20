@@ -88,18 +88,24 @@ func (r *Route) Match(req *http.Request) bool {
 				return false
 			}
 		}
-		vars[req] = map[string]string{}
+		vars.Lock()
+		vars.m[req] = map[string]string{}
+		vars.Unlock()
 		if r.Regex {
 			for k, v := range r.Compile {
 				if v.MatchString(ss[k]) {
-					vars[req][r.Tag[k]] = ss[k]
+					vars.Lock()
+					vars.m[req][r.Tag[k]] = ss[k]
+					vars.Unlock()
 				} else {
 					return false
 				}
 			}
 		}
 		for k, v := range r.Pattern {
-			vars[req][v] = ss[k]
+			vars.Lock()
+			vars.m[req][v] = ss[k]
+			vars.Unlock()
 		}
 		return true
 	}
