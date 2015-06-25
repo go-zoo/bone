@@ -285,3 +285,19 @@ func TestMultiParams(t *testing.T) {
 		t.Error("Regex multi params not valid !")
 	}
 }
+
+func TestWildCard(t *testing.T) {
+	valid := false
+	mux := New()
+	mux.GetFunc("/test/*", func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	})
+
+	req, _ := http.NewRequest("GET", "/test/random/route", nil)
+	rw := httptest.NewRecorder()
+	mux.ServeHTTP(rw, req)
+
+	if !valid {
+		t.Error("Wildcard doesn't work !")
+	}
+}

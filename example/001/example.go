@@ -7,9 +7,11 @@ import (
 	"github.com/go-zoo/bone"
 )
 
+var (
+	mux = bone.New()
+)
+
 func main() {
-	// New mux instance
-	mux := bone.New()
 	// Custom 404
 	mux.NotFoundFunc(Handler404)
 	// Handle with any http method, Handle takes http.Handler as argument.
@@ -19,7 +21,9 @@ func main() {
 	mux.Post("/home", http.HandlerFunc(homeHandler))
 	mux.Get("/home/:var", http.HandlerFunc(varHandler))
 
-	mux.Get("/:any", http.HandlerFunc(homeHandler))
+	mux.GetFunc("/test/*", func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte(req.RequestURI))
+	})
 
 	// Start Listening
 	log.Fatal(http.ListenAndServe(":8080", mux))

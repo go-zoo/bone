@@ -21,16 +21,18 @@ import (
 // handler: is the handler who handle this route
 // Method: define HTTP method on the route
 type Route struct {
-	Path    string
-	Size    int
-	Token   Token
-	Params  bool
-	Pattern map[int]string
-	Regex   bool
-	Tag     map[int]string
-	Compile map[int]*regexp.Regexp
-	Handler http.Handler
-	Method  string
+	Path     string
+	Size     int
+	Token    Token
+	wildCard bool
+	wildPos  int
+	Params   bool
+	Pattern  map[int]string
+	Regex    bool
+	Tag      map[int]string
+	Compile  map[int]*regexp.Regexp
+	Handler  http.Handler
+	Method   string
 }
 
 // Token content all value of a spliting route path
@@ -71,6 +73,9 @@ func (r *Route) save() {
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Regex = true
+			} else if s[:1] == "*" {
+				r.wildCard = true
+				r.wildPos = i
 			} else {
 				r.Token.raw = append(r.Token.raw, i)
 			}
@@ -82,9 +87,12 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
-	if len(ss) == r.Token.Size {
-		for _, v := range r.Token.raw {
+	if len(ss) == r.Token.Size || r.wildCard {
+		for i, v := range r.Token.raw {
 			if ss[v] != r.Token.Tokens[v] {
+				if r.wildCard && i == r.wildPos {
+					return true
+				}
 				return false
 			}
 		}
