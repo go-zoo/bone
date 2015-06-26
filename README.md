@@ -38,12 +38,12 @@ func main () {
   mux := bone.New()
   
   // mux.Get, Post, etc ... takes http.Handler
-  mux.Get("/home/:id", HomeHandler)
-  mux.Get("/profil/:id/:var", ProfilHandler)
-  mux.Post("/data", DataHandler)
+  mux.Get("/home/:id", http.HandleFunc(HomeHandler))
+  mux.Get("/profil/:id/:var", http.HandleFunc(ProfilHandler))
+  mux.Post("/data", http.HandleFunc(DataHandler))
 
   // Support Regex Route params
-  mux.Get("/index/#id^[0-9]$", IndexHandler)
+  mux.Get("/index/#id^[0-9]$", http.HandleFunc(IndexHandler))
 
   // Handle take http.Handler
   mux.Handle("/", http.HandlerFunc(RootHandler))
@@ -69,7 +69,7 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 Example : 
 ``` go
 func main() {
-    mux.GetFunc("/route/#var^[a-z]$", handler) 
+    mux.GetFunc("/route/#var^[a-z]$", http.HandleFunc(handler))
 }
 
 func handler(rw http.ResponseWriter, req *http.Request) {
