@@ -69,7 +69,7 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 Example : 
 ``` go
 func main() {
-    mux.GetFunc("/route/#var^[a-z]$", http.HandleFunc(handler))
+    mux.GetFunc("/route/#var^[a-z]$", handler)
 }
 
 func handler(rw http.ResponseWriter, req *http.Request) {
