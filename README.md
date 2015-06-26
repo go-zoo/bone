@@ -38,15 +38,18 @@ func main () {
   mux := bone.New()
   
   // mux.Get, Post, etc ... takes http.Handler
-  mux.Get("/home/:id", http.HandleFunc(HomeHandler))
-  mux.Get("/profil/:id/:var", http.HandleFunc(ProfilHandler))
-  mux.Post("/data", http.HandleFunc(DataHandler))
+  mux.Get("/home/:id", http.HandlreFunc(HomeHandler))
+  mux.Get("/profil/:id/:var", http.HandlerFunc(ProfilHandler))
+  mux.Post("/data", http.HandlerFunc(DataHandler))
 
   // Support Regex Route params
   mux.Get("/index/#id^[0-9]$", http.HandleFunc(IndexHandler))
 
   // Handle take http.Handler
   mux.Handle("/", http.HandlerFunc(RootHandler))
+
+  // GetFunc, PostFunc etc ... takes http.HandlerFunc
+  mux.GetFunc("/test", Handler)
 
   http.ListenAndServe(":8080", mux)
 }
