@@ -73,6 +73,9 @@ func (r *Route) save() {
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Regex = true
+			} else if i == 0 && string(s[0]) == "*" {
+				r.wildCard = true
+				r.wildPos = 0
 			} else if s[:1] == "*" {
 				r.wildCard = true
 				r.wildPos = i
@@ -88,6 +91,13 @@ func (r *Route) save() {
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 	if len(ss) == r.Token.Size || r.wildCard {
+		if r.wildCard && r.wildPos == 0 {
+			rst := len(req.RequestURI) - len(r.Path[1:])
+			if rst > 0 && r.Path[1:] == req.RequestURI[rst:] {
+				return true
+			}
+			return false
+		}
 		for i, v := range r.Token.raw {
 			if ss[v] != r.Token.Tokens[v] {
 				if r.wildCard && i == r.wildPos {

@@ -317,3 +317,29 @@ func TestWildCard(t *testing.T) {
 		t.Error("Wildcard doesn't work !")
 	}
 }
+
+/*
+func TestSubRouter(t *testing.T) {
+	valid := false
+	router := New()
+	mux := New()
+
+	mux.GetFunc("/test", func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	})
+
+	req, err := http.NewRequest("GET", "/index/test", nil)
+	if err != nil {
+		t.Error(err)
+	}
+	rw := httptest.NewRecorder()
+
+	router.Get("/index/*", mux)
+
+	router.ServeHTTP(rw, req)
+
+	if !valid {
+		t.Error("sub route doesn't work !")
+	}
+}
+*/
