@@ -15,14 +15,14 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd/test/random/a/b/c", nil)
+	request, _ := http.NewRequest("GET", "/sd", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
 
 	muxx.Get("/", http.HandlerFunc(Bench))
 	muxx.Get("/a", http.HandlerFunc(Bench))
 	muxx.Get("/aas", http.HandlerFunc(Bench))
-	muxx.Get("/sd/#t^[a-z]$/:new/*", http.HandlerFunc(Bench))
+	muxx.Get("/sd", http.HandlerFunc(Bench))
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)

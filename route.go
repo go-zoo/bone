@@ -22,6 +22,7 @@ import (
 // Method: define HTTP method on the route
 type Route struct {
 	Path     string
+	Method   string
 	Size     int
 	Token    Token
 	wildCard bool
@@ -29,10 +30,9 @@ type Route struct {
 	Params   bool
 	Pattern  map[int]string
 	Regex    bool
-	Tag      map[int]string
 	Compile  map[int]*regexp.Regexp
+	Tag      map[int]string
 	Handler  http.Handler
-	Method   string
 }
 
 // Token content all value of a spliting route path
@@ -55,16 +55,20 @@ func NewRoute(url string, h http.Handler) *Route {
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
-
+	if string(r.Path[0]) == "*" {
+		r.wildCard = true
+		r.wildPos = 0
+	}
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
-			if s[:1] == ":" {
+			switch s[:1] {
+			case ":":
 				if !r.Params {
 					r.Pattern = make(map[int]string)
 				}
 				r.Pattern[i] = s[1:]
 				r.Params = true
-			} else if s[:1] == "#" {
+			case "#":
 				if !r.Regex {
 					r.Compile = make(map[int]*regexp.Regexp)
 					r.Tag = make(map[int]string)
@@ -73,13 +77,10 @@ func (r *Route) save() {
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Regex = true
-			} else if i == 0 && string(s[0]) == "*" {
-				r.wildCard = true
-				r.wildPos = 0
-			} else if s[:1] == "*" {
+			case "*":
 				r.wildCard = true
 				r.wildPos = i
-			} else {
+			default:
 				r.Token.raw = append(r.Token.raw, i)
 			}
 		}
