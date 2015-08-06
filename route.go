@@ -51,7 +51,7 @@ func NewRoute(url string, h http.Handler) *Route {
 	return r
 }
 
-// Save, set automaticly the the Route.Size and Route.Pattern value
+// Save, set automaticly the the Route.Size and Route.Pattern values
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
