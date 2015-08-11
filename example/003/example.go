@@ -14,6 +14,7 @@ var (
 
 func main() {
 	muxx.GetFunc("*/test", TestHandler)
+
 	muxx.GetFunc("*/main", TestHandler)
 
 	router.Handle("/index/*", muxx)
@@ -22,7 +23,6 @@ func main() {
 }
 
 func TestHandler(rw http.ResponseWriter, req *http.Request) {
-	r := muxx.Routes[req.Method][0]
-	fmt.Println(*r)
+	fmt.Println(req.RequestURI)
 	rw.Write([]byte(req.RequestURI))
 }
