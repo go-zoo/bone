@@ -37,7 +37,7 @@ func main () {
   mux := bone.New()
 
   // mux.Get, Post, etc ... takes http.Handler
-  mux.Get("/home/:id", http.HandlreFunc(HomeHandler))
+  mux.Get("/home/:id", http.HandlerFunc(HomeHandler))
   mux.Get("/profil/:id/:var", http.HandlerFunc(ProfilHandler))
   mux.Post("/data", http.HandlerFunc(DataHandler))
 
