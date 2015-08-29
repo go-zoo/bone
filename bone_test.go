@@ -24,22 +24,6 @@ func TestRouting(t *testing.T) {
 	}
 }
 
-func TestRoutingMeth(t *testing.T) {
-	mux := New()
-	call := false
-	mux.Register("GET", "/a/:id", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
-		call = true
-	}))
-
-	r, _ := http.NewRequest("GET", "/b/123", nil)
-	w := httptest.NewRecorder()
-	mux.ServeHTTP(w, r)
-
-	if call {
-		t.Error("handler should not be called")
-	}
-}
-
 // Test the custom not handler handler sets 404 error code
 func TestNotFoundCustomHandlerSends404(t *testing.T) {
 	mux := New()
