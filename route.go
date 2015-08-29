@@ -92,13 +92,6 @@ func (r *Route) save() {
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 	if len(ss) == r.Token.Size || r.wildCard {
-		if r.wildCard && r.wildPos == 0 {
-			rst := len(req.RequestURI) - len(r.Path[1:])
-			if rst > 0 && r.Path[1:] == req.RequestURI[rst:] {
-				return true
-			}
-			return false
-		}
 		for i, v := range r.Token.raw {
 			if ss[v] != r.Token.Tokens[v] {
 				if r.wildCard && i == r.wildPos {

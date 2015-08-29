@@ -3,7 +3,8 @@ bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://god
 
 ## What is bone ?
 
-Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables with regex parameters, Http method declaration, custom NotFound handler and Sub Routing.
+Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables with regex parameters, Http method declaration
+and custom NotFound handler.
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
 
@@ -62,31 +63,6 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 
 ```
 ## Changelog
-
-#### Update 5 August 2015
-
-- Add support for sub routing with multiple bone mux.
-
-Example:
-``` go
-
-func main() {
-  mainRouter := bone.New()
-
-  muxx1 := bone.New()
-
-  // Sub route need to begin with a * symbole
-  muxx1.GetFunc("*/firstSub", Sub1handler)
-  muxx1.GetFunc("*/SecondSubRoute", Sub1Handler2)
-
-  // Attach the muxx1 as a subrouter of mainRouter, need * symbole for bone to know is for a subRouter
-  mainRouter.GetFunc("/sub/*", muxx1)
-
-
-  http.ListenAndServe(":8080", mainRouter)
-}
-
-```
 
 #### Update 26 April 2015
 

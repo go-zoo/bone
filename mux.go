@@ -11,31 +11,11 @@ import (
 	"net/http"
 )
 
-<<<<<<< HEAD
 // Register the route in the router
 func (m *Mux) Register(method string, path string, handler http.Handler) {
-	switch method {
-	case "GET":
-		m.register("GET", path, handler)
-	case "POST":
-		m.register("POST", path, handler)
-	case "PUT":
-		m.register("PUT", path, handler)
-	case "DELETE":
-		m.register("DELETE", path, handler)
-	case "PATCH":
-		m.register("PATCH", path, handler)
-	case "HEAD":
-		m.register("HEAD", path, handler)
-	case "OPTIONS":
-		m.register("OPTIONS", path, handler)
-	default:
-		return
-	}
+	m.register(method, path, handler)
 }
 
-=======
->>>>>>> parent of f899dc3... Add Register method
 // Get add a new route to the Mux with the Get method
 func (m *Mux) GetFunc(path string, handler http.HandlerFunc) {
 	m.register("GET", path, handler)
