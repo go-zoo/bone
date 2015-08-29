@@ -24,6 +24,22 @@ func TestRouting(t *testing.T) {
 	}
 }
 
+func TestRoutingMeth(t *testing.T) {
+	mux := New()
+	call := false
+	mux.Register("GET", "/a/:id", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = true
+	}))
+
+	r, _ := http.NewRequest("GET", "/b/123", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if call {
+		t.Error("handler should not be called")
+	}
+}
+
 // Test the custom not handler handler sets 404 error code
 func TestNotFoundCustomHandlerSends404(t *testing.T) {
 	mux := New()
@@ -301,3 +317,29 @@ func TestWildCard(t *testing.T) {
 		t.Error("Wildcard doesn't work !")
 	}
 }
+
+/*
+func TestSubRouter(t *testing.T) {
+	valid := false
+	router := New()
+	mux := New()
+
+	mux.GetFunc("/test", func(rw http.ResponseWriter, req *http.Request) {
+		valid = true
+	})
+
+	req, err := http.NewRequest("GET", "/index/test", nil)
+	if err != nil {
+		t.Error(err)
+	}
+	rw := httptest.NewRecorder()
+
+	router.Get("/index/*", mux)
+
+	router.ServeHTTP(rw, req)
+
+	if !valid {
+		t.Error("sub route doesn't work !")
+	}
+}
+*/

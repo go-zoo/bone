@@ -11,6 +11,22 @@ import (
 	"net/http"
 )
 
+// Register the route in the router
+func (m *Mux) Register(method string, path string, handler http.Handler) {
+	m.register(method, path, handler)
+}
+
+// Register the new route in the router with the provided method and handler
+func (m *Mux) register(method string, path string, handler http.Handler) *Route {
+	r := NewRoute(path, handler)
+	if valid(path) {
+		m.Routes[method] = append(m.Routes[method], r)
+		return r
+	}
+	m.Static[path] = r
+	return r
+}
+
 // Get add a new route to the Mux with the Get method
 func (m *Mux) GetFunc(path string, handler http.HandlerFunc) {
 	m.register("GET", path, handler)
