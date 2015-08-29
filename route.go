@@ -55,10 +55,6 @@ func NewRoute(url string, h http.Handler) *Route {
 func (r *Route) save() {
 	r.Size = len(r.Path)
 	r.Token.Tokens = strings.Split(r.Path, "/")
-	if string(r.Path[0]) == "*" {
-		r.wildCard = true
-		r.wildPos = 0
-	}
 	for i, s := range r.Token.Tokens {
 		if len(s) >= 1 {
 			switch s[:1] {
