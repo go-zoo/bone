@@ -57,3 +57,7 @@ func GetValue(req *http.Request, key string) string {
 	vars.RUnlock()
 	return value
 }
+
+func GetAllValues(req *http.Request) map[string]string {
+	return vars.m[req]
+}
