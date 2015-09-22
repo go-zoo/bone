@@ -15,30 +15,14 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 	request, _ := http.NewRequest("GET", "/sd////", nil)
-=======
-	request, _ := http.NewRequest("GET", "/sd/test", nil)
->>>>>>> parent of f899dc3... Add Register method
-=======
-	request, _ := http.NewRequest("GET", "/sd/test", nil)
->>>>>>> parent of f899dc3... Add Register method
 	response := httptest.NewRecorder()
 	muxx := New()
 
 	muxx.Get("/", http.HandlerFunc(Bench))
 	muxx.Get("/a", http.HandlerFunc(Bench))
 	muxx.Get("/aas", http.HandlerFunc(Bench))
-<<<<<<< HEAD
-<<<<<<< HEAD
 	muxx.Get("/sd", http.HandlerFunc(Bench))
-=======
-	muxx.Get("/sd/:id", http.HandlerFunc(Bench))
->>>>>>> parent of f899dc3... Add Register method
-=======
-	muxx.Get("/sd/:id", http.HandlerFunc(Bench))
->>>>>>> parent of f899dc3... Add Register method
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)

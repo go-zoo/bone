@@ -9,7 +9,7 @@ package bone
 
 import "net/http"
 
-// Handle when a request does not match a registered handler.
+// HandleNotFound handle when a request does not match a registered handler.
 func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
 		rw.WriteHeader(http.StatusNotFound)
@@ -50,7 +50,7 @@ func (m *Mux) isStatic(p string) (string, bool) {
 	return "", false
 }
 
-// GetValue Return the key value, of the current *http.Request
+// GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
 	vars.RLock()
 	value := vars.m[req][key]
@@ -58,6 +58,7 @@ func GetValue(req *http.Request, key string) string {
 	return value
 }
 
-func Vars(req *http.Request) map[string]string {
+// GetAllValues return the req params
+func GetAllValues(req *http.Request) map[string]string {
 	return vars.m[req]
 }

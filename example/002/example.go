@@ -24,5 +24,5 @@ func defaultHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func ShowVar(rw http.ResponseWriter, req *http.Request) {
-	rw.Write([]byte(bone.Vars(req)["var"]))
+	rw.Write([]byte(bone.GetAllValues(req)["var"]))
 }
