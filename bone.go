@@ -92,33 +92,33 @@ func (m *Mux) Get(path string, handler http.Handler) *Route {
 }
 
 // Post add a new route to the Mux with the Post method
-func (m *Mux) Post(path string, handler http.Handler) {
-	m.register("POST", path, handler)
+func (m *Mux) Post(path string, handler http.Handler) *Route {
+	return m.register("POST", path, handler)
 }
 
 // Put add a new route to the Mux with the Put method
-func (m *Mux) Put(path string, handler http.Handler) {
-	m.register("PUT", path, handler)
+func (m *Mux) Put(path string, handler http.Handler) *Route {
+	return m.register("PUT", path, handler)
 }
 
 // Delete add a new route to the Mux with the Delete method
-func (m *Mux) Delete(path string, handler http.Handler) {
-	m.register("DELETE", path, handler)
+func (m *Mux) Delete(path string, handler http.Handler) *Route {
+	return m.register("DELETE", path, handler)
 }
 
 // Head add a new route to the Mux with the Head method
-func (m *Mux) Head(path string, handler http.Handler) {
-	m.register("HEAD", path, handler)
+func (m *Mux) Head(path string, handler http.Handler) *Route {
+	return m.register("HEAD", path, handler)
 }
 
 // Patch add a new route to the Mux with the Patch method
-func (m *Mux) Patch(path string, handler http.Handler) {
-	m.register("PATCH", path, handler)
+func (m *Mux) Patch(path string, handler http.Handler) *Route {
+	return m.register("PATCH", path, handler)
 }
 
 // Options add a new route to the Mux with the Options method
-func (m *Mux) Options(path string, handler http.Handler) {
-	m.register("OPTIONS", path, handler)
+func (m *Mux) Options(path string, handler http.Handler) *Route {
+	return m.register("OPTIONS", path, handler)
 }
 
 // NotFound the mux custom 404 handler

@@ -58,6 +58,6 @@ func GetValue(req *http.Request, key string) string {
 	return value
 }
 
-func GetAllValues(req *http.Request) map[string]string {
+func Vars(req *http.Request) map[string]string {
 	return vars.m[req]
 }

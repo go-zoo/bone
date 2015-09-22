@@ -21,6 +21,7 @@ import (
 // handler: is the handler who handle this route
 // Method: define HTTP method on the route
 type Route struct {
+	name     string
 	Path     string
 	Method   string
 	Size     int
@@ -48,6 +49,11 @@ type Token struct {
 func NewRoute(url string, h http.Handler) *Route {
 	r := &Route{Path: url, Handler: h}
 	r.save()
+	return r
+}
+
+func (r *Route) Name(n string) *Route {
+	r.name = n
 	return r
 }
 
