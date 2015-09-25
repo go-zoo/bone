@@ -3,8 +3,16 @@ bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://god
 
 ## What is bone ?
 
-Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support URL variables with regex parameters, Http method declaration
-and custom NotFound handler.
+Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support :
+
+- URL parameters
+- Regex parameters 
+- Wildcard
+- Sub Router
+- Http method declaration
+- Support for `http.Handler` and `http.HandlerFunc`
+- Custom NotFound handler
+- Respect the Go standard `http.Handler` interface
 
 ![alt tag](https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg)
 
