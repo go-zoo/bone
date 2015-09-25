@@ -64,6 +64,28 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 ```
 ## Changelog
 
+#### Update 25 September 2015
+
+- Add support for sub router
+
+Example :
+``` go
+func main() {
+    mux := New()
+    sub := New()
+
+    sub.GetFunc("/test/example", func(rw http.ResponseWriter, req *http.Request) {
+        rw.Write([]byte("From Sub router !"))
+    })
+
+    mux.Get("/api", sub)
+
+    http.ListenAndServe(":8080", mux)
+}
+
+```
+
+
 #### Update 26 April 2015
 
 - Add Support for regex parameters, using ` # ` instead of ` : `.

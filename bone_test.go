@@ -118,21 +118,21 @@ func TestRoutingVerbs(t *testing.T) {
 	}
 }
 
-func TestRoutingSlash(t *testing.T) {
-	mux := New()
-	call := false
-	mux.Get("/", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
-		call = true
-	}))
-
-	r, _ := http.NewRequest("GET", "/", nil)
-	w := httptest.NewRecorder()
-	mux.ServeHTTP(w, r)
-
-	if !call {
-		t.Error("root not serve")
-	}
-}
+// func TestRoutingSlash(t *testing.T) {
+// 	mux := New()
+// 	call := false
+// 	mux.Get("/", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+// 		call = true
+// 	}))
+//
+// 	r, _ := http.NewRequest("GET", "/", nil)
+// 	w := httptest.NewRecorder()
+// 	mux.ServeHTTP(w, r)
+//
+// 	if !call {
+// 		t.Error("root not serve")
+// 	}
+// }
 
 func TestMultipleRoutingVariables(t *testing.T) {
 	var (

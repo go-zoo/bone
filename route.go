@@ -22,6 +22,7 @@ import (
 // Method: define HTTP method on the route
 type Route struct {
 	name     string
+	Sub      bool
 	Path     string
 	Method   string
 	Size     int
@@ -47,7 +48,7 @@ type Token struct {
 
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
-	r := &Route{Path: url, Handler: h}
+	r := &Route{Path: url, Handler: h, Sub: false}
 	r.save()
 	return r
 }

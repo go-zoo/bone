@@ -9,6 +9,7 @@ package bone
 
 import (
 	"net/http"
+	"reflect"
 	"sync"
 )
 
@@ -53,9 +54,15 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-		if req.URL.Path == r.Path && !r.Params {
+		if req.RequestURI == r.Path && !r.Params {
 			r.Handler.ServeHTTP(rw, req)
 			return
+		} else if r.Sub {
+			if req.URL.Path[:len(r.Path)] == r.Path {
+				req.URL.Path = req.URL.Path[len(r.Path):]
+				r.Handler.ServeHTTP(rw, req)
+				return
+			}
 		} else if r.Params || r.Regex || r.wildCard {
 			if ok := r.Match(req); ok {
 				r.Handler.ServeHTTP(rw, req)
@@ -130,6 +137,9 @@ func (m *Mux) NotFound(handler http.Handler) {
 func (m *Mux) register(method string, path string, handler http.Handler) *Route {
 	r := NewRoute(path, handler)
 	if valid(path) {
+		if reflect.TypeOf(r.Handler).String() == "*bone.Mux" {
+			r.Sub = true
+		}
 		m.Routes[method] = append(m.Routes[method], r)
 		return r
 	}
