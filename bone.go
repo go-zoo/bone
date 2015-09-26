@@ -9,7 +9,6 @@ package bone
 
 import (
 	"net/http"
-	"reflect"
 	"sync"
 )
 
@@ -137,7 +136,8 @@ func (m *Mux) NotFound(handler http.Handler) {
 func (m *Mux) register(method string, path string, handler http.Handler) *Route {
 	r := NewRoute(path, handler)
 	if valid(path) {
-		if reflect.TypeOf(r.Handler).String() == "*bone.Mux" {
+		switch handler.(type) {
+		case *Mux:
 			r.Sub = true
 		}
 		m.Routes[method] = append(m.Routes[method], r)
