@@ -53,7 +53,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Loop over all the registred route.
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-		if req.RequestURI == r.Path && !r.Params {
+		if req.URL.Path == r.Path && !r.Params {
 			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Sub {
