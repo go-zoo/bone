@@ -57,7 +57,7 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			r.Handler.ServeHTTP(rw, req)
 			return
 		} else if r.Sub {
-			if req.URL.Path[:len(r.Path)] == r.Path {
+			if len(req.URL.Path) > len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
 				req.URL.Path = req.URL.Path[len(r.Path):]
 				r.Handler.ServeHTTP(rw, req)
 				return
