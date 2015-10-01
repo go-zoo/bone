@@ -39,24 +39,22 @@ func New() *Mux {
 
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	if ok := m.parse(rw, req); ok {
-		return
-	}
-	// Check if it's a static ressource
-	if key, ok := m.isStatic(req.URL.Path); ok {
-		m.Static[key].Handler.ServeHTTP(rw, req)
-		return
-	}
-	// Check if the request path doesn't end with /
-	if !valid(req.URL.Path) {
-		cleanURL(&req.URL.Path)
-		rw.Header().Set("Location", req.URL.Path)
-		rw.WriteHeader(http.StatusFound)
-		if ok := m.parse(rw, req); ok {
-			return
+	if !m.parse(rw, req) {
+		// Check if it's a static ressource
+		if !m.StaticRoute(rw, req) {
+			// Check if the request path doesn't end with /
+			if !valid(req.URL.Path) {
+				cleanURL(&req.URL.Path)
+				rw.Header().Set("Location", req.URL.Path)
+				rw.WriteHeader(http.StatusFound)
+				if m.parse(rw, req) {
+					return
+				}
+			}
+			m.HandleNotFound(rw, req)
 		}
 	}
-	m.HandleNotFound(rw, req)
+	return
 }
 
 func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
@@ -74,7 +72,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 				}
 			}
 		} else if r.Spc {
-			if ok := r.Match(req); ok {
+			if r.Match(req) {
 				r.Handler.ServeHTTP(rw, req)
 				vars.Lock()
 				delete(vars.m, req)

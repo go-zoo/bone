@@ -40,14 +40,16 @@ func valid(path string) bool {
 }
 
 // Check if the request path is for Static route
-func (m *Mux) isStatic(p string) (string, bool) {
-	for k, s := range m.Static {
+func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
+	p := req.URL.Path
+	for _, s := range m.Static {
 		if len(p) >= s.Size && p[:s.Size] == s.Path {
-			return k, true
+			s.ServeHTTP(rw, req)
+			return true
 		}
 		continue
 	}
-	return "", false
+	return false
 }
 
 // GetValue return the key value, of the current *http.Request

@@ -9,6 +9,7 @@ package bone
 
 import "net/http"
 
+// Router is the same as a http.Handler
 type Router interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
