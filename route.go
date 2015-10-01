@@ -21,11 +21,11 @@ import (
 // handler: is the handler who handle this route
 // Method: define HTTP method on the route
 type Route struct {
-	name     string
-	Sub      bool
 	Path     string
 	Method   string
 	Size     int
+	Spc      bool
+	Sub      bool
 	Token    Token
 	wildCard bool
 	wildPos  int
@@ -53,11 +53,6 @@ func NewRoute(url string, h http.Handler) *Route {
 	return r
 }
 
-func (r *Route) Name(n string) *Route {
-	r.name = n
-	return r
-}
-
 // Save, set automaticly the the Route.Size and Route.Pattern value
 func (r *Route) save() {
 	r.Size = len(r.Path)
@@ -71,6 +66,7 @@ func (r *Route) save() {
 				}
 				r.Pattern[i] = s[1:]
 				r.Params = true
+				r.Spc = true
 			case "#":
 				if !r.Regex {
 					r.Compile = make(map[int]*regexp.Regexp)
@@ -80,9 +76,11 @@ func (r *Route) save() {
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Regex = true
+				r.Spc = true
 			case "*":
 				r.wildCard = true
 				r.wildPos = i
+				r.Spc = true
 			default:
 				r.Token.raw = append(r.Token.raw, i)
 			}

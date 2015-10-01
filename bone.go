@@ -39,45 +39,53 @@ func New() *Mux {
 
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	if ok := m.parse(rw, req); ok {
+		return
+	}
+	// Check if it's a static ressource
+	if key, ok := m.isStatic(req.URL.Path); ok {
+		m.Static[key].Handler.ServeHTTP(rw, req)
+		return
+	}
+
 	// Check if the request path doesn't end with /
 	if !valid(req.URL.Path) {
-		if key, ok := m.isStatic(req.URL.Path); ok {
-			m.Static[key].Handler.ServeHTTP(rw, req)
-			return
-		}
-
-		req.URL.Path = cleanUrl(req.URL.Path)
+		req.URL.Path = cleanURL(req.URL.Path)
 		rw.Header().Set("Location", req.URL.Path)
 		rw.WriteHeader(http.StatusFound)
+		if ok := m.parse(rw, req); ok {
+			return
+		}
 	}
-	// Loop over all the registred route.
+
+	m.HandleNotFound(rw, req)
+}
+
+func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
 		if req.URL.Path == r.Path && !r.Params {
 			r.Handler.ServeHTTP(rw, req)
-			return
+			return true
 		} else if r.Sub {
-			if len(req.URL.Path) > len(r.Path) && req.URL.Path[:len(r.Path)] == r.Path {
-				req.URL.Path = req.URL.Path[len(r.Path):]
-				r.Handler.ServeHTTP(rw, req)
-				return
+			if len(req.URL.Path) > len(r.Path) {
+				if req.URL.Path[:len(r.Path)] == r.Path {
+					req.URL.Path = req.URL.Path[len(r.Path):]
+					r.Handler.ServeHTTP(rw, req)
+					return true
+				}
 			}
-		} else if r.Params || r.Regex || r.wildCard {
+		} else if r.Spc {
 			if ok := r.Match(req); ok {
 				r.Handler.ServeHTTP(rw, req)
 				vars.Lock()
 				delete(vars.m, req)
 				vars.Unlock()
-				return
+				return true
 			}
 		}
 	}
-	// If no valid Route found, check for static file
-	if key, ok := m.isStatic(req.URL.Path); ok {
-		m.Static[key].Handler.ServeHTTP(rw, req)
-		return
-	}
-	m.HandleNotFound(rw, req)
+	return false
 }
 
 // Handle add a new route to the Mux without a HTTP method
