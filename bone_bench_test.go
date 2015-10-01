@@ -14,14 +14,14 @@ import (
 
 // Test the ns/op
 func BenchmarkBoneMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd", nil)
+	request, _ := http.NewRequest("GET", "/sd/test", nil)
 	response := httptest.NewRecorder()
 	muxx := New()
 
 	muxx.Get("/", http.HandlerFunc(Bench))
 	muxx.Get("/a", http.HandlerFunc(Bench))
 	muxx.Get("/aas", http.HandlerFunc(Bench))
-	muxx.Get("/sd", http.HandlerFunc(Bench))
+	muxx.Get("/sd/:id", http.HandlerFunc(Bench))
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
@@ -46,14 +46,14 @@ func BenchmarkHttpRouterMux(b *testing.B) {
 
 // Test daryl/zeus ns/op
 func BenchmarkZeusMux(b *testing.B) {
-	request, _ := http.NewRequest("GET", "/sd", nil)
+	request, _ := http.NewRequest("GET", "/sd/test", nil)
 	response := httptest.NewRecorder()
 	muxx := zeus.New()
 
 	muxx.GET("/", Bench)
 	muxx.GET("/a", Bench)
 	muxx.GET("/aas", Bench)
-	muxx.GET("/sd", Bench)
+	muxx.GET("/sd/:id", Bench)
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)

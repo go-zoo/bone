@@ -9,6 +9,36 @@ package bone
 
 import "net/http"
 
+func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
+	for _, r := range m.Routes[req.Method] {
+		// If the route is equal to the request path.
+
+		if req.URL.Path == r.Path {
+			r.Handler.ServeHTTP(rw, req)
+			return true
+		}
+		if r.Spc {
+			if r.Sub {
+				if len(req.URL.Path) >= r.Size {
+					if req.URL.Path[:r.Size] == r.Path {
+						req.URL.Path = req.URL.Path[r.Size:]
+						r.Handler.ServeHTTP(rw, req)
+						return true
+					}
+				}
+			}
+			if r.Match(req) {
+				r.Handler.ServeHTTP(rw, req)
+				vars.Lock()
+				delete(vars.m, req)
+				vars.Unlock()
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // HandleNotFound handle when a request does not match a registered handler.
 func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
@@ -31,6 +61,17 @@ func cleanURL(url *string) {
 }
 
 // Check if the path don't end with a /
+func (m *Mux) validate(rw http.ResponseWriter, req *http.Request) bool {
+	plen := len(req.URL.Path)
+	if plen > 1 && req.URL.Path[plen-1:] == "/" {
+		cleanURL(&req.URL.Path)
+		rw.Header().Set("Location", req.URL.Path)
+		rw.WriteHeader(http.StatusFound)
+	}
+	// Retry to find a route that match
+	return m.parse(rw, req)
+}
+
 func valid(path string) bool {
 	plen := len(path)
 	if plen > 1 && path[plen-1:] == "/" {
@@ -41,7 +82,7 @@ func valid(path string) bool {
 
 // StaticRoute check if the request path is for Static route
 func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
-	for _, s := range m.Static {
+	for _, s := range m.Routes[static] {
 		if len(req.URL.Path) >= s.Size {
 			if req.URL.Path[:s.Size] == s.Path {
 				s.ServeHTTP(rw, req)

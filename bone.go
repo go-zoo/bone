@@ -17,11 +17,11 @@ import (
 // notFound: 404 handler, default http.NotFound if not provided
 type Mux struct {
 	Routes   map[string][]*Route
-	Static   map[string]*Route
 	notFound http.Handler
 }
 
 var (
+	static = "static"
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
 	vars   = struct {
 		sync.RWMutex
@@ -31,57 +31,21 @@ var (
 
 // New create a pointer to a Mux instance
 func New() *Mux {
-	return &Mux{
-		Routes: make(map[string][]*Route),
-		Static: make(map[string]*Route),
-	}
+	return &Mux{Routes: make(map[string][]*Route)}
 }
 
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	// Check if a route match
 	if !m.parse(rw, req) {
 		// Check if it's a static ressource
 		if !m.StaticRoute(rw, req) {
 			// Check if the request path doesn't end with /
-			if !valid(req.URL.Path) {
-				cleanURL(&req.URL.Path)
-				rw.Header().Set("Location", req.URL.Path)
-				rw.WriteHeader(http.StatusFound)
-				if m.parse(rw, req) {
-					return
-				}
-			}
-			m.HandleNotFound(rw, req)
-		}
-	}
-	return
-}
-
-func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
-	for _, r := range m.Routes[req.Method] {
-		// If the route is equal to the request path.
-		if req.URL.Path == r.Path && !r.Params {
-			r.Handler.ServeHTTP(rw, req)
-			return true
-		} else if r.Sub {
-			if len(req.URL.Path) >= len(r.Path) {
-				if req.URL.Path[:len(r.Path)] == r.Path {
-					req.URL.Path = req.URL.Path[len(r.Path):]
-					r.Handler.ServeHTTP(rw, req)
-					return true
-				}
-			}
-		} else if r.Spc {
-			if r.Match(req) {
-				r.Handler.ServeHTTP(rw, req)
-				vars.Lock()
-				delete(vars.m, req)
-				vars.Unlock()
-				return true
+			if !m.validate(rw, req) {
+				m.HandleNotFound(rw, req)
 			}
 		}
 	}
-	return false
 }
 
 // Handle add a new route to the Mux without a HTTP method
@@ -143,7 +107,7 @@ func (m *Mux) register(method string, path string, handler http.Handler) *Route 
 		m.Routes[method] = append(m.Routes[method], r)
 		return r
 	}
-	m.Static[path] = r
+	m.Routes[static] = append(m.Routes[static], r)
 	return r
 }
 
@@ -152,6 +116,7 @@ func (m *Mux) SubRoute(path string, router Router) *Route {
 	r := NewRoute(path, router)
 	if valid(path) {
 		r.Sub = true
+		r.Spc = true
 		for _, mt := range method {
 			m.Routes[mt] = append(m.Routes[mt], r)
 		}
