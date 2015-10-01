@@ -6,9 +6,9 @@ bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://god
 Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support :
 
 - URL parameters
-- Regex parameters 
+- Regex parameters
 - Wildcard
-- Sub Router
+- Sub Router, `mux.SubRouter()`, support most standard router (bone, gorilla/mux, httpRouter etc...)
 - Http method declaration
 - Support for `http.Handler` and `http.HandlerFunc`
 - Custom NotFound handler
@@ -86,7 +86,7 @@ func main() {
         rw.Write([]byte("From Sub router !"))
     })
 
-    mux.Get("/api", sub)
+    mux.SubRouter("/api", sub)
 
     http.ListenAndServe(":8080", mux)
 }

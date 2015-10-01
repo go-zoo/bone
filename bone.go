@@ -66,7 +66,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			r.Handler.ServeHTTP(rw, req)
 			return true
 		} else if r.Sub {
-			if len(req.URL.Path) > len(r.Path) {
+			if len(req.URL.Path) >= len(r.Path) {
 				if req.URL.Path[:len(r.Path)] == r.Path {
 					req.URL.Path = req.URL.Path[len(r.Path):]
 					r.Handler.ServeHTTP(rw, req)
@@ -142,13 +142,22 @@ func (m *Mux) NotFound(handler http.Handler) {
 func (m *Mux) register(method string, path string, handler http.Handler) *Route {
 	r := NewRoute(path, handler)
 	if valid(path) {
-		switch handler.(type) {
-		case *Mux:
-			r.Sub = true
-		}
 		m.Routes[method] = append(m.Routes[method], r)
 		return r
 	}
 	m.Static[path] = r
 	return r
+}
+
+// SubRoute register a third party router as a subRouter of bone
+func (m *Mux) SubRoute(path string, router Router) *Route {
+	r := NewRoute(path, router)
+	if valid(path) {
+		r.Sub = true
+		for _, mt := range method {
+			m.Routes[mt] = append(m.Routes[mt], r)
+		}
+		return r
+	}
+	return nil
 }

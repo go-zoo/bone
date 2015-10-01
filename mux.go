@@ -9,6 +9,10 @@ package bone
 
 import "net/http"
 
+type Router interface {
+	ServeHTTP(http.ResponseWriter, *http.Request)
+}
+
 // Register the route in the router
 func (m *Mux) Register(method string, path string, handler http.Handler) *Route {
 	return m.register(method, path, handler)
