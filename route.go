@@ -13,6 +13,13 @@ import (
 	"strings"
 )
 
+const (
+	params   = 8
+	sub      = 16
+	wildcard = 32
+	regex    = 64
+)
+
 // Route content the required information for a valid route
 // Path: is the Route URL
 // Size: is the length of the path
@@ -21,20 +28,17 @@ import (
 // handler: is the handler who handle this route
 // Method: define HTTP method on the route
 type Route struct {
-	Path     string
-	Method   string
-	Size     int
-	Spc      bool
-	Sub      bool
-	Token    Token
-	wildCard bool
-	wildPos  int
-	Params   bool
-	Pattern  map[int]string
-	Regex    bool
-	Compile  map[int]*regexp.Regexp
-	Tag      map[int]string
-	Handler  http.Handler
+	Path    string
+	Method  string
+	Size    int
+	Atts    int
+	Spc     bool
+	Token   Token
+	wildPos int
+	Pattern map[int]string
+	Compile map[int]*regexp.Regexp
+	Tag     map[int]string
+	Handler http.Handler
 }
 
 // Token content all value of a spliting route path
@@ -48,7 +52,7 @@ type Token struct {
 
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
-	r := &Route{Path: url, Handler: h, Sub: false}
+	r := &Route{Path: url, Handler: h}
 	r.save()
 	return r
 }
@@ -61,24 +65,24 @@ func (r *Route) save() {
 		if len(s) >= 1 {
 			switch s[:1] {
 			case ":":
-				if !r.Params {
+				if r.Pattern == nil {
 					r.Pattern = make(map[int]string)
 				}
 				r.Pattern[i] = s[1:]
-				r.Params = true
+				r.Atts += params
 				r.Spc = true
 			case "#":
-				if !r.Regex {
+				if r.Compile == nil {
 					r.Compile = make(map[int]*regexp.Regexp)
 					r.Tag = make(map[int]string)
 				}
 				tmp := strings.Split(s, "^")
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
-				r.Regex = true
+				r.Atts += regex
 				r.Spc = true
 			case "*":
-				r.wildCard = true
+				r.Atts += wildcard
 				r.wildPos = i
 				r.Spc = true
 			default:
@@ -92,10 +96,10 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
-	if len(ss) == r.Token.Size || r.wildCard {
+	if len(ss) == r.Token.Size || r.Atts&wildcard != 0 {
 		for i, v := range r.Token.raw {
 			if ss[v] != r.Token.Tokens[v] {
-				if r.wildCard && i == r.wildPos {
+				if r.Atts&wildcard != 0 && i == r.wildPos {
 					return true
 				}
 				return false
@@ -104,7 +108,7 @@ func (r *Route) Match(req *http.Request) bool {
 		vars.Lock()
 		vars.m[req] = map[string]string{}
 		vars.Unlock()
-		if r.Regex {
+		if r.Atts&regex != 0 {
 			for k, v := range r.Compile {
 				if v.MatchString(ss[k]) {
 					vars.Lock()

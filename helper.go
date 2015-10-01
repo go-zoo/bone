@@ -18,7 +18,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			return true
 		}
 		if r.Spc {
-			if r.Sub {
+			if r.Atts&sub != 0 {
 				if len(req.URL.Path) >= r.Size {
 					if req.URL.Path[:r.Size] == r.Path {
 						req.URL.Path = req.URL.Path[r.Size:]
