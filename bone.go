@@ -47,17 +47,15 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		m.Static[key].Handler.ServeHTTP(rw, req)
 		return
 	}
-
 	// Check if the request path doesn't end with /
 	if !valid(req.URL.Path) {
-		req.URL.Path = cleanURL(req.URL.Path)
+		cleanURL(&req.URL.Path)
 		rw.Header().Set("Location", req.URL.Path)
 		rw.WriteHeader(http.StatusFound)
 		if ok := m.parse(rw, req); ok {
 			return
 		}
 	}
-
 	m.HandleNotFound(rw, req)
 }
 

@@ -20,14 +20,14 @@ func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 }
 
 // Clean url path
-func cleanURL(url string) string {
-	ulen := len(url)
+func cleanURL(url *string) {
+	ulen := len((*url))
 	if ulen > 1 {
-		if url[ulen-1:] == "/" {
-			return cleanURL(url[:ulen-1])
+		if (*url)[ulen-1:] == "/" {
+			*url = (*url)[:ulen-1]
+			cleanURL(url)
 		}
 	}
-	return url
 }
 
 // Check if the path don't end with a /
