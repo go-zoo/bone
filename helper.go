@@ -39,15 +39,15 @@ func valid(path string) bool {
 	return true
 }
 
-// Check if the request path is for Static route
+// StaticRoute check if the request path is for Static route
 func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
-	p := req.URL.Path
 	for _, s := range m.Static {
-		if len(p) >= s.Size && p[:s.Size] == s.Path {
-			s.ServeHTTP(rw, req)
-			return true
+		if len(req.URL.Path) >= s.Size {
+			if req.URL.Path[:s.Size] == s.Path {
+				s.ServeHTTP(rw, req)
+				return true
+			}
 		}
-		continue
 	}
 	return false
 }
