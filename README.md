@@ -79,8 +79,8 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 Example :
 ``` go
 func main() {
-    mux := New()
-    sub := New()
+    mux := bone.New()
+    sub := mux.NewRouter()
 
     sub.GetFunc("/test/example", func(rw http.ResponseWriter, req *http.Request) {
         rw.Write([]byte("From Sub router !"))
