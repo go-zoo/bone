@@ -18,7 +18,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			return true
 		}
 		if r.Spc {
-			if r.Atts&sub != 0 {
+			if r.Atts&SUB != 0 {
 				if len(req.URL.Path) >= r.Size {
 					if req.URL.Path[:r.Size] == r.Path {
 						req.URL.Path = req.URL.Path[r.Size:]
@@ -29,9 +29,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			}
 			if r.Match(req) {
 				r.Handler.ServeHTTP(rw, req)
-				vars.Lock()
-				delete(vars.m, req)
-				vars.Unlock()
+				delete(vars, req)
 				return true
 			}
 		}
@@ -95,13 +93,10 @@ func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
 
 // GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	vars.RLock()
-	value := vars.m[req][key]
-	vars.RUnlock()
-	return value
+	return vars[req].values[key]
 }
 
-// GetAllValues return the req params
+// GetAllValues return the req PARAMs
 func GetAllValues(req *http.Request) map[string]string {
-	return vars.m[req]
+	return vars[req].values
 }

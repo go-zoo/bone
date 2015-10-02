@@ -14,10 +14,10 @@ import (
 )
 
 const (
-	params   = 8
-	sub      = 16
-	wildcard = 32
-	regex    = 64
+	PARAM = 8
+	SUB   = 16
+	WC    = 32
+	REGEX = 64
 )
 
 // Route content the required information for a valid route
@@ -39,6 +39,7 @@ type Route struct {
 	Compile map[int]*regexp.Regexp
 	Tag     map[int]string
 	Handler http.Handler
+	next    *Route
 }
 
 // Token content all value of a spliting route path
@@ -69,7 +70,7 @@ func (r *Route) save() {
 					r.Pattern = make(map[int]string)
 				}
 				r.Pattern[i] = s[1:]
-				r.Atts += params
+				r.Atts += PARAM
 				r.Spc = true
 			case "#":
 				if r.Compile == nil {
@@ -79,10 +80,10 @@ func (r *Route) save() {
 				tmp := strings.Split(s, "^")
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
-				r.Atts += regex
+				r.Atts += REGEX
 				r.Spc = true
 			case "*":
-				r.Atts += wildcard
+				r.Atts += WC
 				r.wildPos = i
 				r.Spc = true
 			default:
@@ -96,37 +97,36 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
-	if len(ss) == r.Token.Size || r.Atts&wildcard != 0 {
-		for i, v := range r.Token.raw {
-			if ss[v] != r.Token.Tokens[v] {
-				if r.Atts&wildcard != 0 && i == r.wildPos {
-					return true
-				}
+
+	if !r.MatchRawTokens(&ss) {
+		return false
+	}
+	vars[req] = NewVars()
+	if r.Atts&REGEX != 0 {
+		for k, v := range r.Compile {
+			if !v.MatchString(ss[k]) {
 				return false
 			}
+			vars[req].values[r.Tag[k]] = ss[k]
 		}
-		vars.Lock()
-		vars.m[req] = map[string]string{}
-		vars.Unlock()
-		if r.Atts&regex != 0 {
-			for k, v := range r.Compile {
-				if v.MatchString(ss[k]) {
-					vars.Lock()
-					vars.m[req][r.Tag[k]] = ss[k]
-					vars.Unlock()
-				} else {
-					return false
-				}
-			}
-		}
-		for k, v := range r.Pattern {
-			vars.Lock()
-			vars.m[req][v] = ss[k]
-			vars.Unlock()
-		}
-		return true
 	}
-	return false
+	for k, v := range r.Pattern {
+		vars[req].values[v] = ss[k]
+	}
+
+	return true
+}
+
+func (r *Route) MatchRawTokens(ss *[]string) bool {
+	for i, v := range r.Token.raw {
+		if (*ss)[v] != r.Token.Tokens[v] || r.Atts&WC != 0 {
+			if r.Atts&WC != 0 && r.wildPos != i {
+				return true
+			}
+			return false
+		}
+	}
+	return true
 }
 
 // Get set the route method to Get

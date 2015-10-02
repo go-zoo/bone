@@ -7,10 +7,7 @@
 
 package bone
 
-import (
-	"net/http"
-	"sync"
-)
+import "net/http"
 
 // Mux have routes and a notFound handler
 // Route: all the registred route
@@ -20,13 +17,18 @@ type Mux struct {
 	notFound http.Handler
 }
 
+type Vars struct {
+	values map[string]string
+}
+
+func NewVars() *Vars {
+	return &Vars{make(map[string]string)}
+}
+
 var (
 	static = "static"
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
-	vars   = struct {
-		sync.RWMutex
-		m map[*http.Request]map[string]string
-	}{m: make(map[*http.Request]map[string]string)}
+	vars   = map[*http.Request]*Vars{}
 )
 
 // New create a pointer to a Mux instance
@@ -111,12 +113,12 @@ func (m *Mux) register(method string, path string, handler http.Handler) *Route 
 	return r
 }
 
-// SubRoute register a third party router as a subRouter of bone
+// SubRoute register a router as a SubRouter of bone
 func (m *Mux) SubRoute(path string, router Router) *Route {
 	r := NewRoute(path, router)
 	if valid(path) {
 		r.Spc = true
-		r.Atts += sub
+		r.Atts += SUB
 		for _, mt := range method {
 			m.Routes[mt] = append(m.Routes[mt], r)
 		}

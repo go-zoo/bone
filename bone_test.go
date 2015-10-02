@@ -222,11 +222,11 @@ func TestRegexParam(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#ttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/Regex/#ttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
-	r, _ := http.NewRequest("GET", "/regex/test", nil)
+	r, _ := http.NewRequest("GET", "/Regex/test", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
@@ -239,16 +239,16 @@ func TestRegexParam2(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#tttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/Regex/#tttt^[a-z]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
-	r, _ := http.NewRequest("GET", "/regex/1234", nil)
+	r, _ := http.NewRequest("GET", "/Regex/1234", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
 	if valid {
-		t.Error("Regex params not valid !")
+		t.Error("Regex param not valid !")
 	}
 }
 
@@ -256,16 +256,16 @@ func TestRegexParamMutli(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#ttt^[a-z]$/#yyy^[0-9]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/Regex/#ttt^[a-z]$/#yyy^[0-9]$", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
-	r, _ := http.NewRequest("GET", "/regex/first/2", nil)
+	r, _ := http.NewRequest("GET", "/Regex/first/2", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
 	if !valid {
-		t.Error("Regex multi params not valid !")
+		t.Error("Regex multi Params not valid !")
 	}
 }
 
@@ -273,20 +273,20 @@ func TestMultiParams(t *testing.T) {
 	valid := false
 	mux := New()
 
-	mux.Get("/regex/#num^[a-z]$/:test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	mux.Get("/Regex/#num^[a-z]$/:test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 
-	r, _ := http.NewRequest("GET", "/regex/first/second", nil)
+	r, _ := http.NewRequest("GET", "/Regex/first/second", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
 
 	if !valid {
-		t.Error("Regex multi params not valid !")
+		t.Error("Regex multi Params not valid !")
 	}
 }
 
-func TestWildCard(t *testing.T) {
+func TestWC(t *testing.T) {
 	valid := false
 	mux := New()
 	mux.GetFunc("/test/*", func(rw http.ResponseWriter, req *http.Request) {
@@ -298,7 +298,7 @@ func TestWildCard(t *testing.T) {
 	mux.ServeHTTP(rw, req)
 
 	if !valid {
-		t.Error("Wildcard doesn't work !")
+		t.Error("WC doesn't work !")
 	}
 }
 

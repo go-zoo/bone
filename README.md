@@ -5,9 +5,9 @@ bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://god
 
 Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support :
 
-- URL parameters
-- Regex parameters
-- Wildcard
+- URL Parameters
+- REGEX Parameters
+- Wildcard routes
 - Sub Router, `mux.SubRoute()`, support most standard router (bone, gorilla/mux, httpRouter etc...)
 - Http method declaration
 - Support for `http.Handler` and `http.HandlerFunc`
@@ -50,7 +50,7 @@ func main () {
   mux.Get("/profil/:id/:var", http.HandlerFunc(ProfilHandler))
   mux.Post("/data", http.HandlerFunc(DataHandler))
 
-  // Support Regex Route params
+  // Support REGEX Route params
   mux.Get("/index/#id^[0-9]$", http.HandleFunc(IndexHandler))
 
   // Handle take http.Handler
@@ -74,7 +74,7 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 
 #### Update 25 September 2015
 
-- Add support for sub router
+- Add support for Sub router
 
 Example :
 ``` go
@@ -83,7 +83,7 @@ func main() {
     sub := mux.NewRouter()
 
     sub.GetFunc("/test/example", func(rw http.ResponseWriter, req *http.Request) {
-        rw.Write([]byte("From Sub router !"))
+        rw.Write([]byte("From sub router !"))
     })
 
     mux.SubRoute("/api", sub)
@@ -96,7 +96,7 @@ func main() {
 
 #### Update 26 April 2015
 
-- Add Support for regex parameters, using ` # ` instead of ` : `.
+- Add Support for REGEX parameters, using ` # ` instead of ` : `.
 - Add Mux method ` mux.GetFunc(), mux.PostFunc(), etc ... `, takes ` http.HandlerFunc ` instead of ` http.Handler `.
 
 Example :
@@ -112,14 +112,14 @@ func handler(rw http.ResponseWriter, req *http.Request) {
 
 #### Update 29 january 2015
 
-- Speed improvement for url parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```.
+- Speed improvement for url PARAMeters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```.
 
 #### Update 25 december 2014
 
-After trying to find a way of using the default url.Query() for route parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
-So now to get the parameters value in your handler, you need to use
+After trying to find a way of using the default url.Query() for route PARAMeters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
+So now to get the PARAMeters value in your handler, you need to use
 ` bone.GetValue(req, key) ` instead of ` req.Url.Query().Get(key) `.
-This change give a big speed improvement for every kind of application using route parameters, like ~80x faster ...
+This change give a big speed improvement for every kind of application using route PARAMeters, like ~80x faster ...
 Really sorry for breaking things, but i think it's worth it.  
 
 ## TODO
