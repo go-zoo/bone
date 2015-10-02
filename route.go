@@ -39,7 +39,6 @@ type Route struct {
 	Compile map[int]*regexp.Regexp
 	Tag     map[int]string
 	Handler http.Handler
-	next    *Route
 }
 
 // Token content all value of a spliting route path
@@ -98,7 +97,7 @@ func (r *Route) save() {
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 
-	if !r.MatchRawTokens(&ss) {
+	if !r.matchRawTokens(&ss) {
 		return false
 	}
 	vars[req] = NewVars()
@@ -117,7 +116,7 @@ func (r *Route) Match(req *http.Request) bool {
 	return true
 }
 
-func (r *Route) MatchRawTokens(ss *[]string) bool {
+func (r *Route) matchRawTokens(ss *[]string) bool {
 	for i, v := range r.Token.raw {
 		if (*ss)[v] != r.Token.Tokens[v] || r.Atts&WC != 0 {
 			if r.Atts&WC != 0 && r.wildPos != i {

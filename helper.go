@@ -83,7 +83,7 @@ func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
 	for _, s := range m.Routes[static] {
 		if len(req.URL.Path) >= s.Size {
 			if req.URL.Path[:s.Size] == s.Path {
-				s.ServeHTTP(rw, req)
+				s.Handler.ServeHTTP(rw, req)
 				return true
 			}
 		}
