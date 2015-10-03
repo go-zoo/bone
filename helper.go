@@ -17,7 +17,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			r.Handler.ServeHTTP(rw, req)
 			return true
 		}
-		if r.Spc {
+		if r.Atts != 0 {
 			if r.Atts&SUB != 0 {
 				if len(req.URL.Path) >= r.Size {
 					if req.URL.Path[:r.Size] == r.Path {
@@ -47,15 +47,17 @@ func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// Clean url path
-func cleanURL(url *string) {
-	ulen := len((*url))
-	if ulen > 1 {
-		if (*url)[ulen-1:] == "/" {
-			*url = (*url)[:ulen-1]
-			cleanURL(url)
+// StaticRoute check if the request path is for Static route
+func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
+	for _, s := range m.Routes[static] {
+		if len(req.URL.Path) >= s.Size {
+			if req.URL.Path[:s.Size] == s.Path {
+				s.Handler.ServeHTTP(rw, req)
+				return true
+			}
 		}
 	}
+	return false
 }
 
 // Check if the path don't end with a /
@@ -78,17 +80,15 @@ func valid(path string) bool {
 	return true
 }
 
-// StaticRoute check if the request path is for Static route
-func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
-	for _, s := range m.Routes[static] {
-		if len(req.URL.Path) >= s.Size {
-			if req.URL.Path[:s.Size] == s.Path {
-				s.Handler.ServeHTTP(rw, req)
-				return true
-			}
+// Clean url path
+func cleanURL(url *string) {
+	ulen := len((*url))
+	if ulen > 1 {
+		if (*url)[ulen-1:] == "/" {
+			*url = (*url)[:ulen-1]
+			cleanURL(url)
 		}
 	}
-	return false
 }
 
 // GetValue return the key value, of the current *http.Request

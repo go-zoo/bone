@@ -117,7 +117,6 @@ func (m *Mux) register(method string, path string, handler http.Handler) *Route 
 func (m *Mux) SubRoute(path string, router Router) *Route {
 	r := NewRoute(path, router)
 	if valid(path) {
-		r.Spc = true
 		r.Atts += SUB
 		for _, mt := range method {
 			m.Routes[mt] = append(m.Routes[mt], r)

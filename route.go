@@ -14,10 +14,10 @@ import (
 )
 
 const (
-	PARAM = 8
-	SUB   = 16
-	WC    = 32
-	REGEX = 64
+	PARAM = 2
+	SUB   = 4
+	WC    = 8
+	REGEX = 16
 )
 
 // Route content the required information for a valid route
@@ -32,9 +32,8 @@ type Route struct {
 	Method  string
 	Size    int
 	Atts    int
-	Spc     bool
-	Token   Token
 	wildPos int
+	Token   Token
 	Pattern map[int]string
 	Compile map[int]*regexp.Regexp
 	Tag     map[int]string
@@ -70,7 +69,6 @@ func (r *Route) save() {
 				}
 				r.Pattern[i] = s[1:]
 				r.Atts += PARAM
-				r.Spc = true
 			case "#":
 				if r.Compile == nil {
 					r.Compile = make(map[int]*regexp.Regexp)
@@ -80,11 +78,9 @@ func (r *Route) save() {
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
 				r.Atts += REGEX
-				r.Spc = true
 			case "*":
-				r.Atts += WC
 				r.wildPos = i
-				r.Spc = true
+				r.Atts += WC
 			default:
 				r.Token.raw = append(r.Token.raw, i)
 			}
@@ -97,23 +93,24 @@ func (r *Route) save() {
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 
-	if !r.matchRawTokens(&ss) {
-		return false
-	}
-	vars[req] = NewVars()
-	if r.Atts&REGEX != 0 {
-		for k, v := range r.Compile {
-			if !v.MatchString(ss[k]) {
-				return false
-			}
-			vars[req].values[r.Tag[k]] = ss[k]
+	if r.matchRawTokens(&ss) {
+		if vars[req] == nil {
+			vars[req] = NewVars()
 		}
+		for k, v := range r.Pattern {
+			vars[req].values[v] = ss[k]
+		}
+		if r.Atts&REGEX != 0 {
+			for k, v := range r.Compile {
+				if !v.MatchString(ss[k]) {
+					return false
+				}
+				vars[req].values[r.Tag[k]] = ss[k]
+			}
+		}
+		return true
 	}
-	for k, v := range r.Pattern {
-		vars[req].values[v] = ss[k]
-	}
-
-	return true
+	return false
 }
 
 func (r *Route) matchRawTokens(ss *[]string) bool {
