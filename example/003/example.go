@@ -25,7 +25,7 @@ func main() {
 		rw.Write([]byte("Hello from httprouter mux"))
 	})
 
-	muxx := bone.New()
+	muxx := bone.New().Prefix("/api")
 
 	muxx.SubRoute("/bone", boneSub)
 	muxx.SubRoute("/gorilla", gorrilaSub)

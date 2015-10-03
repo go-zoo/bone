@@ -12,7 +12,6 @@ import "net/http"
 func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 	for _, r := range m.Routes[req.Method] {
 		// If the route is equal to the request path.
-
 		if req.URL.Path == r.Path {
 			r.Handler.ServeHTTP(rw, req)
 			return true
@@ -48,7 +47,7 @@ func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 }
 
 // StaticRoute check if the request path is for Static route
-func (m *Mux) StaticRoute(rw http.ResponseWriter, req *http.Request) bool {
+func (m *Mux) staticRoute(rw http.ResponseWriter, req *http.Request) bool {
 	for _, s := range m.Routes[static] {
 		if len(req.URL.Path) >= s.Size {
 			if req.URL.Path[:s.Size] == s.Path {

@@ -8,6 +8,7 @@ Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support
 - URL Parameters
 - REGEX Parameters
 - Wildcard routes
+- Router Prefix
 - Sub Router, `mux.SubRoute()`, support most standard router (bone, gorilla/mux, httpRouter etc...)
 - Http method declaration
 - Support for `http.Handler` and `http.HandlerFunc`
@@ -143,4 +144,7 @@ MIT
 
 ## Links
 - Blog post talking about bone : http://www.peterbe.com/plog/my-favorite-go-multiplexer
+
+## Libs
+- Errors dump for Go : [Trash](https://github.com/go-zoo/trash)
 - Middleware Chaining module : [Claw](https://github.com/go-zoo/claw)

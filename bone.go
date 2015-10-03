@@ -14,6 +14,7 @@ import "net/http"
 // notFound: 404 handler, default http.NotFound if not provided
 type Mux struct {
 	Routes   map[string][]*Route
+	prefix   string
 	notFound http.Handler
 }
 
@@ -36,12 +37,18 @@ func New() *Mux {
 	return &Mux{Routes: make(map[string][]*Route)}
 }
 
+// Prefix set a default prefix for all routes registred on the router
+func (m *Mux) Prefix(p string) *Mux {
+	m.prefix = p
+	return m
+}
+
 // Serve http request
 func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// Check if a route match
 	if !m.parse(rw, req) {
 		// Check if it's a static ressource
-		if !m.StaticRoute(rw, req) {
+		if !m.staticRoute(rw, req) {
 			// Check if the request path doesn't end with /
 			if !m.validate(rw, req) {
 				m.HandleNotFound(rw, req)
@@ -104,7 +111,7 @@ func (m *Mux) NotFound(handler http.Handler) {
 
 // Register the new route in the router with the provided method and handler
 func (m *Mux) register(method string, path string, handler http.Handler) *Route {
-	r := NewRoute(path, handler)
+	r := NewRoute(m.prefix+path, handler)
 	if valid(path) {
 		m.Routes[method] = append(m.Routes[method], r)
 		return r
@@ -115,7 +122,7 @@ func (m *Mux) register(method string, path string, handler http.Handler) *Route 
 
 // SubRoute register a router as a SubRouter of bone
 func (m *Mux) SubRoute(path string, router Router) *Route {
-	r := NewRoute(path, router)
+	r := NewRoute(m.prefix+path, router)
 	if valid(path) {
 		r.Atts += SUB
 		for _, mt := range method {
