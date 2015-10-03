@@ -28,7 +28,7 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			}
 			if r.Match(req) {
 				r.Handler.ServeHTTP(rw, req)
-				delete(vars, req)
+				delete(vars.v, req)
 				return true
 			}
 		}
@@ -92,10 +92,13 @@ func cleanURL(url *string) {
 
 // GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	return vars[req].values[key]
+	vars.RLock()
+	v := vars.v[req][key]
+	vars.RUnlock()
+	return v
 }
 
 // GetAllValues return the req PARAMs
 func GetAllValues(req *http.Request) map[string]string {
-	return vars[req].values
+	return vars.v[req]
 }

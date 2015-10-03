@@ -36,8 +36,6 @@ func homeHandler(rw http.ResponseWriter, req *http.Request) {
 func varHandler(rw http.ResponseWriter, req *http.Request) {
 	varr := bone.GetValue(req, "var")
 	test := bone.GetValue(req, "test")
-	log.Println("VAR = ", varr)
-	log.Println("TEST = ", test)
 
 	rw.Write([]byte(varr + " " + test))
 }
