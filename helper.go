@@ -92,10 +92,7 @@ func cleanURL(url *string) {
 
 // GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	vars.RLock()
-	v := vars.v[req][key]
-	vars.RUnlock()
-	return v
+	return vars.v[req][key]
 }
 
 // GetAllValues return the req PARAMs

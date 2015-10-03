@@ -94,9 +94,11 @@ func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 
 	if r.matchRawTokens(&ss) {
-		vars.Lock()
+		//
 		if vars.v[req] == nil {
+			vars.Lock()
 			vars.v[req] = make(map[string]string)
+			vars.Unlock()
 		}
 		for k, v := range r.Pattern {
 			vars.v[req][v] = ss[k]
@@ -109,7 +111,7 @@ func (r *Route) Match(req *http.Request) bool {
 				vars.v[req][r.Tag[k]] = ss[k]
 			}
 		}
-		vars.Unlock()
+
 		return true
 	}
 	return false
