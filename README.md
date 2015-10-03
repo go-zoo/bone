@@ -112,14 +112,14 @@ func handler(rw http.ResponseWriter, req *http.Request) {
 
 #### Update 29 january 2015
 
-- Speed improvement for url PARAMeters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```.
+- Speed improvement for url Parameters, from ```~ 1500 ns/op ``` to ```~ 1000 ns/op ```.
 
 #### Update 25 december 2014
 
-After trying to find a way of using the default url.Query() for route PARAMeters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
-So now to get the PARAMeters value in your handler, you need to use
+After trying to find a way of using the default url.Query() for route parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
+So now to get the parameters value in your handler, you need to use
 ` bone.GetValue(req, key) ` instead of ` req.Url.Query().Get(key) `.
-This change give a big speed improvement for every kind of application using route PARAMeters, like ~80x faster ...
+This change give a big speed improvement for every kind of application using route parameters, like ~80x faster ...
 Really sorry for breaking things, but i think it's worth it.  
 
 ## TODO
