@@ -142,5 +142,5 @@ Really sorry for breaking things, but i think it's worth it.
 MIT
 
 ## Links
-
-Middleware Chaining module : [Claw](https://github.com/go-zoo/claw)
+- Blog post talking about bone : http://www.peterbe.com/plog/my-favorite-go-multiplexer
+- Middleware Chaining module : [Claw](https://github.com/go-zoo/claw)
