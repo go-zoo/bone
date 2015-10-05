@@ -101,7 +101,9 @@ func (r *Route) Match(req *http.Request) bool {
 			vars.Unlock()
 		}
 		for k, v := range r.Pattern {
-			vars.v[req][v] = ss[k]
+			if len(ss) >= r.Token.Size {
+				vars.v[req][v] = ss[k]
+			}
 		}
 		if r.Atts&REGEX != 0 {
 			for k, v := range r.Compile {

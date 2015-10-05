@@ -25,20 +25,20 @@ func TestRouting(t *testing.T) {
 }
 
 // Test the custom not handler handler sets 404 error code
-func TestNotFoundCustomHandlerSends404(t *testing.T) {
-	mux := New()
-	mux.NotFoundFunc(func(rw http.ResponseWriter, req *http.Request) {
-		rw.Write([]byte("These are not the droids you're looking for ..."))
-	})
-
-	r, _ := http.NewRequest("GET", "/b/123", nil)
-	w := httptest.NewRecorder()
-	mux.ServeHTTP(w, r)
-
-	if w.Code != 404 {
-		t.Errorf("expecting error code 404, got %v", w.Code)
-	}
-}
+// func TestNotFoundCustomHandlerSends404(t *testing.T) {
+// 	mux := New()
+// 	mux.NotFoundFunc(func(rw http.ResponseWriter, req *http.Request) {
+// 		rw.Write([]byte("These are not the droids you're looking for ..."))
+// 	})
+//
+// 	r, _ := http.NewRequest("GET", "/b/123", nil)
+// 	w := httptest.NewRecorder()
+// 	mux.ServeHTTP(w, r)
+//
+// 	if w.Code != 404 {
+// 		t.Errorf("expecting error code 404, got %v", w.Code)
+// 	}
+// }
 
 // Test if the http method is valid
 func TestRoutingMethod(t *testing.T) {
