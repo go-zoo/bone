@@ -39,7 +39,6 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 // HandleNotFound handle when a request does not match a registered handler.
 func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
 	if m.notFound != nil {
-		rw.WriteHeader(http.StatusNotFound)
 		m.notFound.ServeHTTP(rw, req)
 	} else {
 		http.NotFound(rw, req)
