@@ -36,15 +36,6 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 	return false
 }
 
-// HandleNotFound handle when a request does not match a registered handler.
-func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
-	if m.notFound != nil {
-		m.notFound.ServeHTTP(rw, req)
-	} else {
-		http.NotFound(rw, req)
-	}
-}
-
 // StaticRoute check if the request path is for Static route
 func (m *Mux) staticRoute(rw http.ResponseWriter, req *http.Request) bool {
 	for _, s := range m.Routes[static] {
@@ -56,6 +47,15 @@ func (m *Mux) staticRoute(rw http.ResponseWriter, req *http.Request) bool {
 		}
 	}
 	return false
+}
+
+// HandleNotFound handle when a request does not match a registered handler.
+func (m *Mux) HandleNotFound(rw http.ResponseWriter, req *http.Request) {
+	if m.notFound != nil {
+		m.notFound.ServeHTTP(rw, req)
+	} else {
+		http.NotFound(rw, req)
+	}
 }
 
 // Check if the path don't end with a /

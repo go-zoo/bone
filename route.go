@@ -92,10 +92,8 @@ func (r *Route) save() {
 // Match check if the request match the route Pattern
 func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
-
-	if r.matchRawTokens(&ss) {
-		if len(ss) >= r.Token.Size {
-
+	if len(ss) >= r.Token.Size {
+		if r.matchRawTokens(&ss) {
 			if vars.v[req] == nil {
 				vars.Lock()
 				vars.v[req] = make(map[string]string)
