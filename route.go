@@ -110,7 +110,6 @@ func (r *Route) Match(req *http.Request) bool {
 					vars.v[req][r.Tag[k]] = ss[k]
 				}
 			}
-
 			return true
 		}
 	}
