@@ -94,27 +94,27 @@ func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 
 	if r.matchRawTokens(&ss) {
-		//
-		if vars.v[req] == nil {
-			vars.Lock()
-			vars.v[req] = make(map[string]string)
-			vars.Unlock()
-		}
-		for k, v := range r.Pattern {
-			if len(ss) >= r.Token.Size {
+		if len(ss) >= r.Token.Size {
+
+			if vars.v[req] == nil {
+				vars.Lock()
+				vars.v[req] = make(map[string]string)
+				vars.Unlock()
+			}
+			for k, v := range r.Pattern {
 				vars.v[req][v] = ss[k]
 			}
-		}
-		if r.Atts&REGEX != 0 {
-			for k, v := range r.Compile {
-				if !v.MatchString(ss[k]) {
-					return false
+			if r.Atts&REGEX != 0 {
+				for k, v := range r.Compile {
+					if !v.MatchString(ss[k]) {
+						return false
+					}
+					vars.v[req][r.Tag[k]] = ss[k]
 				}
-				vars.v[req][r.Tag[k]] = ss[k]
 			}
-		}
 
-		return true
+			return true
+		}
 	}
 	return false
 }
