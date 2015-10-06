@@ -120,15 +120,18 @@ func (r *Route) Match(req *http.Request) bool {
 }
 
 func (r *Route) matchRawTokens(ss *[]string) bool {
-	for i, v := range r.Token.raw {
-		if (*ss)[v] != r.Token.Tokens[v] {
-			if r.Atts&WC != 0 && r.wildPos == i {
-				return true
+	if len(*ss) >= r.Token.Size {
+		for i, v := range r.Token.raw {
+			if (*ss)[v] != r.Token.Tokens[v] {
+				if r.Atts&WC != 0 && r.wildPos == i {
+					return true
+				}
+				return false
 			}
-			return false
 		}
+		return true
 	}
-	return true
+	return false
 }
 
 // Get set the route method to Get
