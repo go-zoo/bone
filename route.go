@@ -94,7 +94,7 @@ func (r *Route) Match(req *http.Request) bool {
 	ss := strings.Split(req.URL.Path, "/")
 
 	if r.matchRawTokens(&ss) {
-		if len(ss) == r.Token.Size {
+		if len(ss) == r.Token.Size || r.Atts&WC != 0 {
 			if vars.v[req] == nil {
 				vars.Lock()
 				vars.v[req] = make(map[string]string)
@@ -113,8 +113,6 @@ func (r *Route) Match(req *http.Request) bool {
 					vars.Unlock()
 				}
 			}
-			return true
-		} else if r.Atts&WC != 0 {
 			return true
 		}
 	}
