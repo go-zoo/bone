@@ -135,5 +135,5 @@ func (m *Mux) GetRequestRoute(req *http.Request) string {
 		}
 	}
 
-	return "NonFound"
+	return "404-NotFound"
 }
