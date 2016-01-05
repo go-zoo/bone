@@ -2,6 +2,7 @@ package bone
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -117,6 +118,59 @@ func TestRoutingVerbs(t *testing.T) {
 		}
 		s.Close()
 	}
+}
+
+// If no HEAD method, default to GET
+func TestHeadToGet(t *testing.T) {
+	path := "/"
+	m := New()
+	m.Get(path, http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		rw.Write([]byte("text"))
+	}))
+
+	s := httptest.NewServer(m)
+	// GET
+	reqGet, err := http.NewRequest("GET", s.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resGet, err := http.DefaultClient.Do(reqGet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resGet.Body.Close()
+	if resGet.StatusCode != 200 {
+		t.Fatalf("GET: HTTP %d", resGet.StatusCode)
+	}
+	body, _ := ioutil.ReadAll(resGet.Body)
+	if resGet.Header.Get("Content-Length") != "4" {
+		t.Fatalf("GET: incorrect Content-Length")
+	}
+	if string(body) != "text" {
+		t.Fatalf("GET: incorrect response body")
+	}
+	// HEAD
+	reqHead, err := http.NewRequest("HEAD", s.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resHead, err := http.DefaultClient.Do(reqHead)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resHead.Body.Close()
+	if resHead.StatusCode != 200 {
+		t.Fatalf("If no HEAD method, default to GET: HTTP %d", resHead.StatusCode)
+	}
+	body, _ = ioutil.ReadAll(resHead.Body)
+	if resGet.Header.Get("Content-Length") != "4" {
+		t.Fatalf("HEAD: incorrect Content-Length")
+	}
+	if len(body) != 0 {
+		t.Fatalf("HEAD: should not contain response body")
+	}
+
+	s.Close()
 }
 
 func TestRoutingSlash(t *testing.T) {
