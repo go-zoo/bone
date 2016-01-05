@@ -16,6 +16,15 @@ func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 			return true
 		}
 	}
+	// If no HEAD method, default to GET
+	if req.Method == "HEAD" {
+		for _, r := range m.Routes["GET"] {
+			ok := r.parse(rw, req)
+			if ok {
+				return true
+			}
+		}
+	}
 	return false
 }
 
