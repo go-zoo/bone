@@ -79,6 +79,46 @@ func TestRoutingPath(t *testing.T) {
 	}
 }
 
+func TestPrefix(t *testing.T) {
+	mux := New()
+	mux.Prefix("/api")
+	call := false
+	mux.Get("/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = true
+	}))
+	mux.Get("/api/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = false
+	}))
+
+	r, _ := http.NewRequest("GET", "/api/t", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !call {
+		t.Error("response with the wrong path")
+	}
+}
+
+func TestPrefixWithTailSlash(t *testing.T) {
+	mux := New()
+	mux.Prefix("/api/")
+	call := false
+	mux.Get("/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = true
+	}))
+	mux.Get("/api/t", http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		call = false
+	}))
+
+	r, _ := http.NewRequest("GET", "/api/t", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if !call {
+		t.Error("response with the wrong path")
+	}
+}
+
 func TestRoutingVerbs(t *testing.T) {
 	var (
 		methods = []string{"DELETE", "GET", "HEAD", "PUT", "POST", "PATCH", "OPTIONS", "HEAD"}
