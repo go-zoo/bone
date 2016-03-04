@@ -95,14 +95,14 @@ func (r *Route) Match(req *http.Request) bool {
 
 	if r.matchRawTokens(&ss) {
 		if len(ss) == r.Token.Size || r.Atts&WC != 0 {
+			vars.Lock()
 			if vars.v[req] == nil {
-				vars.Lock()
 				vars.v[req] = make(map[string]string)
-				vars.Unlock()
 			}
 			for k, v := range r.Pattern {
 				vars.v[req][v] = ss[k]
 			}
+			vars.Unlock()
 			if r.Atts&REGEX != 0 {
 				for k, v := range r.Compile {
 					if !v.MatchString(ss[k]) {
