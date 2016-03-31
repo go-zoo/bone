@@ -7,7 +7,11 @@
 
 package bone
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+	"strings"
+)
 
 func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 	for _, r := range m.Routes[req.Method] {
@@ -128,4 +132,34 @@ func (m *Mux) GetRequestRoute(req *http.Request) string {
 	}
 
 	return "NotFound"
+}
+
+// GetQuery return the key value, of the current *http.Request query
+func GetQuery(req *http.Request, key string) []string {
+	if ok, value := extractQueries(req); ok {
+		return value[key]
+	}
+	return nil
+}
+
+// GetAllQueries return all queries of the current *http.Request
+func GetAllQueries(req *http.Request) map[string][]string {
+	if ok, values := extractQueries(req); ok {
+		return values
+	}
+	return nil
+}
+
+func extractQueries(req *http.Request) (bool, map[string][]string) {
+	if q, err := url.ParseQuery(req.URL.RawQuery); err == nil {
+		var queries = make(map[string][]string)
+		for k, v := range q {
+			for _, item := range v {
+				values := strings.Split(item, ",")
+				queries[k] = append(queries[k], values...)
+			}
+		}
+		return true, queries
+	}
+	return false, nil
 }
