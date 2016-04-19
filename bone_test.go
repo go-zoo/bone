@@ -397,18 +397,32 @@ func TestWC(t *testing.T) {
 	}
 }
 
-func TestSlashRemoving(t *testing.T) {
-	valid := false
+func TestSlashRemoving1(t *testing.T) {
 	mux := New()
 	mux.GetFunc("/test", func(rw http.ResponseWriter, req *http.Request) {
-		valid = true
+		t.Error("/test got called but it should have been a redirect!")
 	})
 
 	req, _ := http.NewRequest("GET", "/test/////", nil)
 	rw := httptest.NewRecorder()
 	mux.ServeHTTP(rw, req)
 
-	if !valid {
-		t.Error("Slash removing doesn't work !")
+	if rw.Header().Get("Location") != "/test" {
+		t.Error("Redirect 1 doesn't work")
+	}
+}
+
+func TestSlashRemovingWithQuery(t *testing.T) {
+	mux := New()
+	mux.GetFunc("/test", func(rw http.ResponseWriter, req *http.Request) {
+		t.Error("/test got called but it should have been a redirect!")
+	})
+
+	req, _ := http.NewRequest("GET", "/test/?foo=bar&buzz=bazz", nil)
+	rw := httptest.NewRecorder()
+	mux.ServeHTTP(rw, req)
+
+	if rw.Header().Get("Location") != "/test?foo=bar&buzz=bazz" {
+		t.Error("Redirect 2 doesn't work")
 	}
 }
