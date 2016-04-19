@@ -60,8 +60,9 @@ func (m *Mux) validate(rw http.ResponseWriter, req *http.Request) bool {
 	plen := len(req.URL.Path)
 	if plen > 1 && req.URL.Path[plen-1:] == "/" {
 		cleanURL(&req.URL.Path)
-		rw.Header().Set("Location", req.URL.Path)
+		rw.Header().Set("Location", req.URL.String())
 		rw.WriteHeader(http.StatusFound)
+		return true
 	}
 	// Retry to find a route that match
 	return m.parse(rw, req)
