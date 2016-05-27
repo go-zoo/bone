@@ -10,6 +10,10 @@ import (
 func main() {
 	mux := bone.New()
 
+	mux.NotFoundFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.WriteHeader(http.StatusTeapot)
+	})
+
 	mux.GetFunc("/", defaultHandler)
 	mux.GetFunc("/reg/#var^[a-z]$/#var2^[0-9]$", ShowVar)
 	mux.GetFunc("/test", defaultHandler)
