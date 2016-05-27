@@ -68,7 +68,7 @@ func (r *Route) save() {
 					r.Pattern = make(map[int]string)
 				}
 				r.Pattern[i] = s[1:]
-				r.Atts += PARAM
+				r.Atts |= PARAM
 			case "#":
 				if r.Compile == nil {
 					r.Compile = make(map[int]*regexp.Regexp)
@@ -77,10 +77,10 @@ func (r *Route) save() {
 				tmp := strings.Split(s, "^")
 				r.Tag[i] = tmp[0][1:]
 				r.Compile[i] = regexp.MustCompile("^" + tmp[1][:len(tmp[1])-1])
-				r.Atts += REGEX
+				r.Atts |= REGEX
 			case "*":
 				r.wildPos = i
-				r.Atts += WC
+				r.Atts |= WC
 			default:
 				r.Token.raw = append(r.Token.raw, i)
 			}
