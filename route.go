@@ -99,10 +99,9 @@ func (r *Route) Match(req *http.Request) bool {
 			if vars.v[req] == nil {
 				vars.v[req] = make(map[string]string)
 			}
+			vars.Lock()
 			for k, v := range r.Pattern {
-				vars.Lock()
 				vars.v[req][v] = ss[k]
-				vars.Unlock()
 			}
 			vars.Unlock()
 			if r.Atts&REGEX != 0 {
