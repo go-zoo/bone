@@ -8,7 +8,6 @@
 package bone
 
 import (
-	"context"
 	"net/http"
 	"regexp"
 	"strings"
@@ -49,12 +48,6 @@ type Token struct {
 	Tokens []string
 	Size   int
 }
-
-// contextKeyType is a private struct that is used for storing bone values in net.Context
-type contextKeyType struct{}
-
-// contextKey is the key that is used to store bone values in the net.Context for each request
-var contextKey = contextKeyType{}
 
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
@@ -141,9 +134,7 @@ func (r *Route) parse(rw http.ResponseWriter, req *http.Request) bool {
 		}
 
 		if ok, vars := r.Match(req); ok {
-			ctx := context.WithValue(req.Context(), contextKey, vars)
-			newReq := req.WithContext(ctx)
-			r.Handler.ServeHTTP(rw, newReq)
+			r.serveMatchedRequest(rw, req, vars)
 			return true
 		}
 	}

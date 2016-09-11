@@ -91,16 +91,6 @@ func GetValue(req *http.Request, key string) string {
 	return GetAllValues(req)[key]
 }
 
-// GetAllValues return the req PARAMs
-func GetAllValues(req *http.Request) map[string]string {
-	values, ok := req.Context().Value(contextKey).(map[string]string)
-	if ok {
-		return values
-	}
-
-	return map[string]string{}
-}
-
 // This function returns the route of given Request
 func (m *Mux) GetRequestRoute(req *http.Request) string {
 	cleanURL(&req.URL.Path)
