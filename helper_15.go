@@ -33,8 +33,13 @@ func (r *Route) serveMatchedRequest(rw http.ResponseWriter, req *http.Request, v
 	globalVars.Lock()
 	globalVars.v[req] = vars
 	globalVars.Unlock()
+
+	// Regardless if ServeHTTP panics (and potentially recovers) we can make sure to not leak
+	// memory in globalVars for this request
+	defer func() {
+		globalVars.Lock()
+		delete(globalVars.v, req)
+		globalVars.Unlock()
+	}()
 	r.Handler.ServeHTTP(rw, req)
-	globalVars.Lock()
-	delete(globalVars.v, req)
-	globalVars.Unlock()
 }
