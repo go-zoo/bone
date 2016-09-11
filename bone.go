@@ -10,7 +10,6 @@ package bone
 import (
 	"net/http"
 	"strings"
-	"sync"
 )
 
 // Mux have routes and a notFound handler
@@ -25,10 +24,6 @@ type Mux struct {
 var (
 	static = "static"
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
-	vars   = struct {
-		sync.RWMutex
-		v map[*http.Request]map[string]string
-	}{v: make(map[*http.Request]map[string]string)}
 )
 
 // New create a pointer to a Mux instance

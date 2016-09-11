@@ -8,6 +8,7 @@
 package bone
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strings"
@@ -49,6 +50,12 @@ type Token struct {
 	Size   int
 }
 
+// contextKeyType is a private struct that is used for storing bone values in net.Context
+type contextKeyType struct{}
+
+// contextKey is the key that is used to store bone values in the net.Context for each request
+var contextKey = contextKeyType{}
+
 // NewRoute return a pointer to a Route instance and call save() on it
 func NewRoute(url string, h http.Handler) *Route {
 	r := &Route{Path: url, Handler: h}
@@ -89,34 +96,36 @@ func (r *Route) save() {
 	}
 }
 
-// Match check if the request match the route Pattern
-func (r *Route) Match(req *http.Request) bool {
+// Match check if the request matches the route Pattern and returns a map of the parsed variables
+// if it matches
+func (r *Route) Match(req *http.Request) (bool, map[string]string) {
 	ss := strings.Split(req.URL.EscapedPath(), "/")
-
 	if r.matchRawTokens(&ss) {
 		if len(ss) == r.Token.Size || r.Atts&WC != 0 {
-			vars.Lock()
-			if vars.v[req] == nil {
-				vars.v[req] = make(map[string]string)
+			totalSize := len(r.Pattern)
+			if r.Atts&REGEX != 0 {
+				totalSize += len(r.Compile)
 			}
+
+			vars := make(map[string]string, totalSize)
 			for k, v := range r.Pattern {
-				vars.v[req][v] = ss[k]
+				vars[v] = ss[k]
 			}
-			vars.Unlock()
+
 			if r.Atts&REGEX != 0 {
 				for k, v := range r.Compile {
 					if !v.MatchString(ss[k]) {
-						return false
+						return false, nil
 					}
-					vars.Lock()
-					vars.v[req][r.Tag[k]] = ss[k]
-					vars.Unlock()
+					vars[r.Tag[k]] = ss[k]
 				}
 			}
-			return true
+
+			return true, vars
 		}
 	}
-	return false
+
+	return false, nil
 }
 
 func (r *Route) parse(rw http.ResponseWriter, req *http.Request) bool {
@@ -130,11 +139,11 @@ func (r *Route) parse(rw http.ResponseWriter, req *http.Request) bool {
 				}
 			}
 		}
-		if r.Match(req) {
-			r.Handler.ServeHTTP(rw, req)
-			vars.Lock()
-			delete(vars.v, req)
-			vars.Unlock()
+
+		if ok, vars := r.Match(req); ok {
+			ctx := context.WithValue(req.Context(), contextKey, vars)
+			newReq := req.WithContext(ctx)
+			r.Handler.ServeHTTP(rw, newReq)
 			return true
 		}
 	}

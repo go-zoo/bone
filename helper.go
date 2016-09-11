@@ -88,18 +88,17 @@ func cleanURL(url *string) {
 
 // GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	vars.RLock()
-	value := vars.v[req][key]
-	vars.RUnlock()
-	return value
+	return GetAllValues(req)[key]
 }
 
 // GetAllValues return the req PARAMs
 func GetAllValues(req *http.Request) map[string]string {
-	vars.RLock()
-	values := vars.v[req]
-	vars.RUnlock()
-	return values
+	values, ok := req.Context().Value(contextKey).(map[string]string)
+	if ok {
+		return values
+	}
+
+	return map[string]string{}
 }
 
 // This function returns the route of given Request
@@ -114,7 +113,7 @@ func (m *Mux) GetRequestRoute(req *http.Request) string {
 					}
 				}
 			}
-			if r.Match(req) {
+			if ok, _ := r.Match(req); ok {
 				return r.Path
 			}
 		}
