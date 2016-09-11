@@ -1,30 +1,39 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
   <head>
-    <meta charset="UTF-8">
-    <title>Bone by go-zoo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Bone</h1>
-      <h2 class="project-tagline">Lightning Fast HTTP Multiplexer</h2>
-      <a href="https://github.com/go-zoo/bone" class="btn">View on GitHub</a>
-      <a href="https://github.com/go-zoo/bone/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/go-zoo/bone/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <section class="main-content">
-      <h1>
-<a id="bone---" class="anchor" href="#bone---" aria-hidden="true"><span class="octicon octicon-link"></span></a>bone <a href="http://godoc.org/github.com/go-zoo/bone"><img src="https://godoc.org/github.com/squiidz/bone?status.png" alt="GoDoc"></a> <a href="https://travis-ci.org/go-zoo/bone"><img src="https://travis-ci.org/go-zoo/bone.svg" alt="Build Status"></a> <a href="https://codeship.com/projects/57454"><img src="https://codeship.com/projects/172dae70-802a-0132-9038-321707412590/status?branch=master" alt="Codeship Status for squiidz/bone"></a>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Bone by go-zoo</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Bone</h1>
+        <h2>Lightning Fast HTTP Multiplexer</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/go-zoo/bone/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/go-zoo/bone/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/go-zoo/bone" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="bone---" class="anchor" href="#bone---" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bone <a href="http://godoc.org/github.com/go-zoo/bone"><img src="https://godoc.org/github.com/squiidz/bone?status.png" alt="GoDoc"></a> <a href="https://travis-ci.org/go-zoo/bone"><img src="https://travis-ci.org/go-zoo/bone.svg" alt="Build Status"></a> <a href="https://goreportcard.com/report/go-zoo/bone"><img src="https://goreportcard.com/badge/go-zoo/bone" alt="Go Report Card"></a>
 </h1>
 
 <h2>
-<a id="what-is-bone-" class="anchor" href="#what-is-bone-" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is bone ?</h2>
+<a id="what-is-bone-" class="anchor" href="#what-is-bone-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is bone ?</h2>
 
 <p>Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support :</p>
 
@@ -32,6 +41,7 @@
 <li>URL Parameters</li>
 <li>REGEX Parameters</li>
 <li>Wildcard routes</li>
+<li>Router Prefix</li>
 <li>Sub Router, <code>mux.SubRoute()</code>, support most standard router (bone, gorilla/mux, httpRouter etc...)</li>
 <li>Http method declaration</li>
 <li>Support for <code>http.Handler</code> and <code>http.HandlerFunc</code>
@@ -43,7 +53,7 @@
 <p><img src="https://c2.staticflickr.com/2/1070/540747396_5542b42cca_z.jpg" alt="alt tag"></p>
 
 <h2>
-<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span class="octicon octicon-link"></span></a>Speed</h2>
+<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Speed</h2>
 
 <pre><code>- BenchmarkBoneMux        10000000               118 ns/op
 - BenchmarkZeusMux          100000               144 ns/op
@@ -57,7 +67,7 @@
  Bone do not pretend to be the fastest router for every job.</p>
 
 <h2>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
 
 <div class="highlight highlight-source-go"><pre>
 <span class="pl-k">package</span> main
@@ -97,10 +107,17 @@
 </pre></div>
 
 <h2>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog</h2>
 
 <h4>
-<a id="update-25-september-2015" class="anchor" href="#update-25-september-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update 25 September 2015</h4>
+<a id="update-10-september-2016" class="anchor" href="#update-10-september-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 10 September 2016</h4>
+
+<ul>
+<li>Add support for go1.7 net.Context</li>
+</ul>
+
+<h4>
+<a id="update-25-september-2015" class="anchor" href="#update-25-september-2015" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 25 September 2015</h4>
 
 <ul>
 <li>Add support for Sub router</li>
@@ -123,7 +140,7 @@
 </pre></div>
 
 <h4>
-<a id="update-26-april-2015" class="anchor" href="#update-26-april-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update 26 April 2015</h4>
+<a id="update-26-april-2015" class="anchor" href="#update-26-april-2015" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 26 April 2015</h4>
 
 <ul>
 <li>Add Support for REGEX parameters, using <code>#</code> instead of <code>:</code>.</li>
@@ -141,23 +158,23 @@
 }</pre></div>
 
 <h4>
-<a id="update-29-january-2015" class="anchor" href="#update-29-january-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update 29 january 2015</h4>
+<a id="update-29-january-2015" class="anchor" href="#update-29-january-2015" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 29 january 2015</h4>
 
 <ul>
-<li>Speed improvement for url PARAMeters, from <code>~ 1500 ns/op</code> to <code>~ 1000 ns/op</code>.</li>
+<li>Speed improvement for url Parameters, from <code>~ 1500 ns/op</code> to <code>~ 1000 ns/op</code>.</li>
 </ul>
 
 <h4>
-<a id="update-25-december-2014" class="anchor" href="#update-25-december-2014" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update 25 december 2014</h4>
+<a id="update-25-december-2014" class="anchor" href="#update-25-december-2014" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 25 december 2014</h4>
 
-<p>After trying to find a way of using the default url.Query() for route Parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
-So now to get the Parameters value in your handler, you need to use
+<p>After trying to find a way of using the default url.Query() for route parameters, i decide to change the way bone is dealing with this. url.Query() is too slow for good router performance.
+So now to get the parameters value in your handler, you need to use
 <code>bone.GetValue(req, key)</code> instead of <code>req.Url.Query().Get(key)</code>.
-This change give a big speed improvement for every kind of application using route Parameters, like ~80x faster ...
+This change give a big speed improvement for every kind of application using route parameters, like ~80x faster ...
 Really sorry for breaking things, but i think it's worth it.  </p>
 
 <h2>
-<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO</h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO</h2>
 
 <ul>
 <li>DOC</li>
@@ -167,7 +184,7 @@ Really sorry for breaking things, but i think it's worth it.  </p>
 </ul>
 
 <h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
 
 <ol>
 <li>Fork it</li>
@@ -179,23 +196,30 @@ Really sorry for breaking things, but i think it's worth it.  </p>
 </ol>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT</p>
 
 <h2>
-<a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h2>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Links</h2>
 
-<p>Middleware Chaining module : <a href="https://github.com/go-zoo/claw">Claw</a></p>
+<ul>
+<li>Blog post talking about bone : <a href="http://www.peterbe.com/plog/my-favorite-go-multiplexer">http://www.peterbe.com/plog/my-favorite-go-multiplexer</a>
+</li>
+</ul>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/go-zoo/bone">Bone</a> is maintained by <a href="https://github.com/go-zoo">go-zoo</a>.</span>
+<h2>
+<a id="libs" class="anchor" href="#libs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Libs</h2>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
+<ul>
+<li>Errors dump for Go : <a href="https://github.com/go-zoo/trash">Trash</a>
+</li>
+<li>Middleware Chaining module : <a href="https://github.com/go-zoo/claw">Claw</a>
+</li>
+</ul>
+      </section>
+    </div>
 
-    </section>
-
-  
+    
   </body>
 </html>
