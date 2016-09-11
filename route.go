@@ -89,9 +89,15 @@ func (r *Route) save() {
 	}
 }
 
-// Match check if the request matches the route Pattern and returns a map of the parsed variables
-// if it matches
-func (r *Route) Match(req *http.Request) (bool, map[string]string) {
+// Match check if the request match the route Pattern
+func (r *Route) Match(req *http.Request) bool {
+	ok, _ := r.matchAndParse(req)
+	return ok
+}
+
+// matchAndParse check if the request matches the route Pattern and returns a map of the parsed
+// variables if it matches
+func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 	ss := strings.Split(req.URL.EscapedPath(), "/")
 	if r.matchRawTokens(&ss) {
 		if len(ss) == r.Token.Size || r.Atts&WC != 0 {
@@ -133,7 +139,7 @@ func (r *Route) parse(rw http.ResponseWriter, req *http.Request) bool {
 			}
 		}
 
-		if ok, vars := r.Match(req); ok {
+		if ok, vars := r.matchAndParse(req); ok {
 			r.serveMatchedRequest(rw, req, vars)
 			return true
 		}

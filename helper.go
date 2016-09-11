@@ -103,7 +103,7 @@ func (m *Mux) GetRequestRoute(req *http.Request) string {
 					}
 				}
 			}
-			if ok, _ := r.Match(req); ok {
+			if r.Match(req) {
 				return r.Path
 			}
 		}
