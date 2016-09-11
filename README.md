@@ -73,6 +73,10 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 ```
 ## Changelog
 
+#### Update 10 September 2016
+
+- Add support for go1.7 net.Context
+
 #### Update 25 September 2015
 
 - Add support for Sub router

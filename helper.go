@@ -88,18 +88,7 @@ func cleanURL(url *string) {
 
 // GetValue return the key value, of the current *http.Request
 func GetValue(req *http.Request, key string) string {
-	vars.RLock()
-	value := vars.v[req][key]
-	vars.RUnlock()
-	return value
-}
-
-// GetAllValues return the req PARAMs
-func GetAllValues(req *http.Request) map[string]string {
-	vars.RLock()
-	values := vars.v[req]
-	vars.RUnlock()
-	return values
+	return GetAllValues(req)[key]
 }
 
 // This function returns the route of given Request
