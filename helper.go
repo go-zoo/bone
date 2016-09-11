@@ -91,7 +91,7 @@ func GetValue(req *http.Request, key string) string {
 	return GetAllValues(req)[key]
 }
 
-// This function returns the route of given Request
+// GetRequestRoute returns the route of given Request
 func (m *Mux) GetRequestRoute(req *http.Request) string {
 	cleanURL(&req.URL.Path)
 	for _, r := range m.Routes[req.Method] {
