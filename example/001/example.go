@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	mux = bone.New(Wrap, Log)
+	mux = bone.New(Wrap)
 )
 
 func Wrap(mux *bone.Mux) *bone.Mux {
