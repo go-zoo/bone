@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-zoo/bone"
 )
@@ -18,8 +19,9 @@ func Wrap(mux *bone.Mux) *bone.Mux {
 
 func Serve(mux *bone.Mux) *bone.Mux {
 	mux.Serve = func(rw http.ResponseWriter, req *http.Request) {
-		fmt.Println("Handling request")
+		tr := time.Now()
 		mux.DefaultServe(rw, req)
+		fmt.Println("Serve request from", req.RemoteAddr, "in", time.Since(tr))
 	}
 	return mux
 }
@@ -39,7 +41,7 @@ func main() {
 	})
 
 	// Start Listening
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(mux.ListenAndServe(":8080"))
 }
 
 func homeHandler(rw http.ResponseWriter, req *http.Request) {

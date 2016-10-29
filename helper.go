@@ -13,6 +13,10 @@ import (
 	"strings"
 )
 
+func (mux *Mux) ListenAndServe(port string) error {
+	return http.ListenAndServe(port, mux)
+}
+
 func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
 	for _, r := range m.Routes[req.Method] {
 		ok := r.parse(rw, req)
