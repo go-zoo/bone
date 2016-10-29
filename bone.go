@@ -19,6 +19,7 @@ type Mux struct {
 	Routes   map[string][]*Route
 	prefix   string
 	notFound http.Handler
+	Serve    func(rw http.ResponseWriter, req *http.Request)
 }
 
 var (
@@ -30,7 +31,8 @@ type adapter func(*Mux) *Mux
 
 // New create a pointer to a Mux instance
 func New(adapters ...adapter) *Mux {
-	m := &Mux{Routes: make(map[string][]*Route)}
+	m := &Mux{Routes: make(map[string][]*Route), Serve: nil}
+	m.Serve = m.DefaultServe
 	for _, adap := range adapters {
 		adap(m)
 	}
@@ -43,8 +45,8 @@ func (m *Mux) Prefix(p string) *Mux {
 	return m
 }
 
-// Serve http request
-func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+// serve is the default http request handler
+func (m *Mux) DefaultServe(rw http.ResponseWriter, req *http.Request) {
 	// Check if a route match
 	if !m.parse(rw, req) {
 		// Check if it's a static ressource
@@ -55,6 +57,11 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
+}
+
+// ServeHTTP pass the request to the serve method of Mux
+func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	m.Serve(rw, req)
 }
 
 // Handle add a new route to the Mux without a HTTP method

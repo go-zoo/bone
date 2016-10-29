@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,11 +9,19 @@ import (
 )
 
 var (
-	mux = bone.New(Wrap, Log)
+	mux = bone.New(Serve, Wrap)
 )
 
 func Wrap(mux *bone.Mux) *bone.Mux {
 	return mux.Prefix("/api")
+}
+
+func Serve(mux *bone.Mux) *bone.Mux {
+	mux.Serve = func(rw http.ResponseWriter, req *http.Request) {
+		fmt.Println("Handling request")
+		mux.DefaultServe(rw, req)
+	}
+	return mux
 }
 
 func main() {
