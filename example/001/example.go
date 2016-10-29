@@ -8,8 +8,12 @@ import (
 )
 
 var (
-	mux = bone.New()
+	mux = bone.New(Wrap, Log)
 )
+
+func Wrap(mux *bone.Mux) *bone.Mux {
+	return mux.Prefix("/api")
+}
 
 func main() {
 	// Custom 404

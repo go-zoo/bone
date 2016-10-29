@@ -1,3 +1,5 @@
+// go list -f '{{range .TestImports}}{{.}} {{end}}' github.com/go-zoo/bone | xargs go get
+
 package bone
 
 /*

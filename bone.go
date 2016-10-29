@@ -26,9 +26,15 @@ var (
 	method = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS"}
 )
 
+type adapter func(*Mux) *Mux
+
 // New create a pointer to a Mux instance
-func New() *Mux {
-	return &Mux{Routes: make(map[string][]*Route)}
+func New(adapters ...adapter) *Mux {
+	m := &Mux{Routes: make(map[string][]*Route)}
+	for _, adap := range adapters {
+		adap(m)
+	}
+	return m
 }
 
 // Prefix set a default prefix for all routes registred on the router
