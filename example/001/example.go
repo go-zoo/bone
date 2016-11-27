@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -52,7 +53,12 @@ func varHandler(rw http.ResponseWriter, req *http.Request) {
 	varr := bone.GetValue(req, "var")
 	test := bone.GetValue(req, "test")
 
-	rw.Write([]byte(varr + " " + test))
+	var args = struct {
+		first  string
+		second string
+	}{varr, test}
+
+	_ = json.NewEncoder(rw).Encode(&args)
 }
 
 func Handler404(rw http.ResponseWriter, req *http.Request) {

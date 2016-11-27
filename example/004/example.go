@@ -11,6 +11,7 @@ import (
 
 func main() {
 	mux := bone.New()
+	mux.CaseSensative = true
 
 	mux.GetFunc("/ctx/:var", rootHandler)
 
