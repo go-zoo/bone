@@ -114,6 +114,7 @@ func (m *Mux) NotFound(handler http.Handler) {
 // Register the new route in the router with the provided method and handler
 func (m *Mux) register(method string, path string, handler http.Handler) *Route {
 	r := NewRoute(m.prefix+path, handler)
+	r.Method = method
 	if valid(path) {
 		m.Routes[method] = append(m.Routes[method], r)
 		return r
