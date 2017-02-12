@@ -2,7 +2,7 @@ title: Bone
 description: Lightning Fast HTTP Multiplexer
 google_analytics: 
 show_downloads: true
-theme: jekyll-theme-hacker
+theme: jekyll-theme-midnight
 
 gems:
   - jekyll-mentions
