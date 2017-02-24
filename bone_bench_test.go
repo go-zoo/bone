@@ -25,6 +25,7 @@ func BenchmarkBoneMux(b *testing.B) {
 	muxx.Get("/a", http.HandlerFunc(Bench))
 	muxx.Get("/aas", http.HandlerFunc(Bench))
 	muxx.Get("/sd", http.HandlerFunc(Bench))
+	muxx.Get("/sd/:var", http.HandlerFunc(Bench))
 
 	for n := 0; n < b.N; n++ {
 		muxx.ServeHTTP(response, request)
