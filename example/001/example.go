@@ -19,7 +19,7 @@ func Wrap(mux *bone.Mux) *bone.Mux {
 }
 
 func Serve(mux *bone.Mux) *bone.Mux {
-	mux.Serve = func(rw http.ResponseWriter, req *http.Request) {
+	mux.serve = func(rw http.ResponseWriter, req *http.Request) {
 		tr := time.Now()
 		mux.DefaultServe(rw, req)
 		fmt.Println("Serve request from", req.RemoteAddr, "in", time.Since(tr))
