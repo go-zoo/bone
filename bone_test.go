@@ -453,7 +453,7 @@ func TestMux_Prefix(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		p string
@@ -472,7 +472,7 @@ func TestMux_Prefix(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Prefix(tt.args.p); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Prefix() = %v, want %v", got, tt.want)
@@ -481,12 +481,12 @@ func TestMux_Prefix(t *testing.T) {
 	}
 }
 
-func TestMux_Defaultserve(t *testing.T) {
+func TestMux_DefaultServe(t *testing.T) {
 	type fields struct {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		rw  http.ResponseWriter
@@ -505,19 +505,19 @@ func TestMux_Defaultserve(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			m.DefaultServe(tt.args.rw, tt.args.req)
 		})
 	}
 }
 
-func TestMux_serveHTTP(t *testing.T) {
+func TestMux_ServeHTTP(t *testing.T) {
 	type fields struct {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		rw  http.ResponseWriter
@@ -536,7 +536,7 @@ func TestMux_serveHTTP(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			m.ServeHTTP(tt.args.rw, tt.args.req)
 		})
@@ -548,7 +548,7 @@ func TestMux_Handle(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -567,7 +567,7 @@ func TestMux_Handle(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			m.Handle(tt.args.path, tt.args.handler)
 		})
@@ -579,7 +579,7 @@ func TestMux_HandleFunc(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -598,7 +598,7 @@ func TestMux_HandleFunc(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			m.HandleFunc(tt.args.path, tt.args.handler)
 		})
@@ -610,7 +610,7 @@ func TestMux_Get(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -630,7 +630,7 @@ func TestMux_Get(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Get(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Get() = %v, want %v", got, tt.want)
@@ -644,7 +644,7 @@ func TestMux_Post(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -664,7 +664,7 @@ func TestMux_Post(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Post(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Post() = %v, want %v", got, tt.want)
@@ -678,7 +678,7 @@ func TestMux_Put(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -698,7 +698,7 @@ func TestMux_Put(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Put(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Put() = %v, want %v", got, tt.want)
@@ -712,7 +712,7 @@ func TestMux_Delete(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -732,7 +732,7 @@ func TestMux_Delete(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Delete(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Delete() = %v, want %v", got, tt.want)
@@ -746,7 +746,7 @@ func TestMux_Head(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -766,7 +766,7 @@ func TestMux_Head(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Head(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Head() = %v, want %v", got, tt.want)
@@ -780,7 +780,7 @@ func TestMux_Patch(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -800,7 +800,7 @@ func TestMux_Patch(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Patch(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Patch() = %v, want %v", got, tt.want)
@@ -814,7 +814,7 @@ func TestMux_Options(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		path    string
@@ -834,7 +834,7 @@ func TestMux_Options(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.Options(tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.Options() = %v, want %v", got, tt.want)
@@ -848,7 +848,7 @@ func TestMux_NotFound(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		handler http.Handler
@@ -866,7 +866,7 @@ func TestMux_NotFound(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			m.NotFound(tt.args.handler)
 		})
@@ -878,7 +878,7 @@ func TestMux_register(t *testing.T) {
 		Routes   map[string][]*Route
 		prefix   string
 		notFound http.Handler
-		serve    func(rw http.ResponseWriter, req *http.Request)
+		Serve    func(rw http.ResponseWriter, req *http.Request)
 	}
 	type args struct {
 		method  string
@@ -899,10 +899,44 @@ func TestMux_register(t *testing.T) {
 				Routes:   tt.fields.Routes,
 				prefix:   tt.fields.prefix,
 				notFound: tt.fields.notFound,
-				serve:    tt.fields.serve,
+				Serve:    tt.fields.Serve,
 			}
 			if got := m.register(tt.args.method, tt.args.path, tt.args.handler); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mux.register() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMux_SubRoute(t *testing.T) {
+	type fields struct {
+		Routes   map[string][]*Route
+		prefix   string
+		notFound http.Handler
+		Serve    func(rw http.ResponseWriter, req *http.Request)
+	}
+	type args struct {
+		path   string
+		router Router
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Route
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Mux{
+				Routes:   tt.fields.Routes,
+				prefix:   tt.fields.prefix,
+				notFound: tt.fields.notFound,
+				Serve:    tt.fields.Serve,
+			}
+			if got := m.SubRoute(tt.args.path, tt.args.router); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Mux.SubRoute() = %v, want %v", got, tt.want)
 			}
 		})
 	}

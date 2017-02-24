@@ -19,7 +19,7 @@ type Mux struct {
 	Routes        map[string][]*Route
 	prefix        string
 	notFound      http.Handler
-	serve         func(rw http.ResponseWriter, req *http.Request)
+	Serve         func(rw http.ResponseWriter, req *http.Request)
 	CaseSensitive bool
 }
 
@@ -32,12 +32,12 @@ type adapter func(*Mux) *Mux
 
 // New create a pointer to a Mux instance
 func New(adapters ...adapter) *Mux {
-	m := &Mux{Routes: make(map[string][]*Route), serve: nil, CaseSensitive: true}
+	m := &Mux{Routes: make(map[string][]*Route), Serve: nil, CaseSensitive: true}
 	for _, adap := range adapters {
 		adap(m)
 	}
-	if m.serve == nil {
-		m.serve = m.DefaultServe
+	if m.Serve == nil {
+		m.Serve = m.DefaultServe
 	}
 	return m
 }
@@ -67,5 +67,5 @@ func (m *Mux) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if !m.CaseSensitive {
 		req.URL.Path = strings.ToLower(req.URL.Path)
 	}
-	m.serve(rw, req)
+	m.Serve(rw, req)
 }

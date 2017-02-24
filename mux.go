@@ -124,12 +124,14 @@ func (m *Mux) register(method string, path string, handler http.Handler) *Route 
 }
 
 // SubRoute register a router as a SubRouter of bone
-func (m *Mux) SubRoute(path string, router http.Handler) {
+func (m *Mux) SubRoute(path string, router Router) *Route {
 	r := NewRoute(m.prefix+path, router)
 	if valid(path) {
 		r.Atts += SUB
 		for _, mt := range method {
 			m.Routes[mt] = append(m.Routes[mt], r)
 		}
+		return r
 	}
+	return nil
 }
