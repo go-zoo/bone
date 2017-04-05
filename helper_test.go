@@ -328,3 +328,37 @@ func Test_extractQueries(t *testing.T) {
 		})
 	}
 }
+
+func TestMux_otherMethods(t *testing.T) {
+	type fields struct {
+		Routes   map[string][]*Route
+		prefix   string
+		notFound http.Handler
+		Serve    func(rw http.ResponseWriter, req *http.Request)
+	}
+	type args struct {
+		rw  http.ResponseWriter
+		req *http.Request
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Mux{
+				Routes:   tt.fields.Routes,
+				prefix:   tt.fields.prefix,
+				notFound: tt.fields.notFound,
+				Serve:    tt.fields.Serve,
+			}
+			if got := m.otherMethods(tt.args.rw, tt.args.req); got != tt.want {
+				t.Errorf("Mux.otherMethods() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
