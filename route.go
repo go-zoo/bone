@@ -170,6 +170,26 @@ func (r *Route) matchRawTokens(ss *[]string) bool {
 	return false
 }
 
+func (r *Route) exists(rw http.ResponseWriter, req *http.Request) bool {
+	if r.Atts != 0 {
+		if r.Atts&SUB != 0 {
+			if len(req.URL.Path) >= r.Size {
+				if req.URL.Path[:r.Size] == r.Path {
+					return true
+				}
+			}
+		}
+
+		if ok, _ := r.matchAndParse(req); ok {
+			return true
+		}
+	}
+	if req.URL.Path == r.Path {
+		return true
+	}
+	return false
+}
+
 // Get set the route method to Get
 func (r *Route) Get() *Route {
 	r.Method = "GET"

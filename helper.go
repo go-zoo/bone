@@ -156,3 +156,18 @@ func extractQueries(req *http.Request) (bool, map[string][]string) {
 	}
 	return false, nil
 }
+
+func (m *Mux) otherMethods(rw http.ResponseWriter, req *http.Request) bool {
+	for _, met := range method {
+		if met != req.Method {
+			for _, r := range m.Routes[met] {
+				ok := r.exists(rw, req)
+				if ok {
+					rw.WriteHeader(http.StatusMethodNotAllowed)
+					return true
+				}
+			}
+		}
+	}
+	return false
+}

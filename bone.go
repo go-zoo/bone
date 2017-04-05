@@ -56,7 +56,10 @@ func (m *Mux) DefaultServe(rw http.ResponseWriter, req *http.Request) {
 		if !m.staticRoute(rw, req) {
 			// Check if the request path doesn't end with /
 			if !m.validate(rw, req) {
-				m.HandleNotFound(rw, req)
+				// Check if same route exists for another HTTP method
+				if !m.otherMethods(rw, req) {
+					m.HandleNotFound(rw, req)
+				}
 			}
 		}
 	}
