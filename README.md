@@ -146,8 +146,9 @@ Really sorry for breaking things, but i think it's worth it.
 ## License
 MIT
 
-## Links
-- Blog post talking about bone : http://www.peterbe.com/plog/my-favorite-go-multiplexer
+## Blog Posts
+- http://www.peterbe.com/plog/my-favorite-go-multiplexer
+- https://harshladha.xyz/my-first-library-in-go-language-hasty-791b8e2b9e69
 
 ## Libs
 - Errors dump for Go : [Trash](https://github.com/go-zoo/trash)
