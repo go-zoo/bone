@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-func (mux *Mux) ListenAndServe(port string) error {
-	return http.ListenAndServe(port, mux)
+func (m *Mux) ListenAndServe(port string) error {
+	return http.ListenAndServe(port, m)
 }
 
 func (m *Mux) parse(rw http.ResponseWriter, req *http.Request) bool {
@@ -101,11 +101,7 @@ func (m *Mux) GetRequestRoute(req *http.Request) string {
 	for _, r := range m.Routes[req.Method] {
 		if r.Atts != 0 {
 			if r.Atts&SUB != 0 {
-				if len(req.URL.Path) >= r.Size {
-					if req.URL.Path[:r.Size] == r.Path {
-						return r.Path
-					}
-				}
+				return r.Handler.(*Mux).GetRequestRoute(req)
 			}
 			if r.Match(req) {
 				return r.Path
