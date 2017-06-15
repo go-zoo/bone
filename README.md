@@ -72,16 +72,6 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 
 ```
 
-## TODO
-
-- DOC
-- More Testing
-- Debugging
-- Optimisation
-
-## License
-MIT
-
 ## Blog Posts
 - http://www.peterbe.com/plog/my-favorite-go-multiplexer
 - https://harshladha.xyz/my-first-library-in-go-language-hasty-791b8e2b9e69
