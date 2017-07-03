@@ -54,11 +54,13 @@ func varHandler(rw http.ResponseWriter, req *http.Request) {
 	test := bone.GetValue(req, "test")
 
 	var args = struct {
-		first  string
-		second string
+		First  string
+		Second string
 	}{varr, test}
 
-	_ = json.NewEncoder(rw).Encode(&args)
+	if err := json.NewEncoder(rw).Encode(&args); err != nil {
+		panic(err)
+	}
 }
 
 func Handler404(rw http.ResponseWriter, req *http.Request) {
