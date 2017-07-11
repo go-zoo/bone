@@ -52,7 +52,7 @@ func main () {
   mux.Post("/data", http.HandlerFunc(DataHandler))
 
   // Support REGEX Route params
-  mux.Get("/index/#id^[0-9]$", http.HandleFunc(IndexHandler))
+  mux.Get("/index/#id^[0-9]$", http.HandlerFunc(IndexHandler))
 
   // Handle take http.Handler
   mux.Handle("/", http.HandlerFunc(RootHandler))
