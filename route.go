@@ -9,6 +9,7 @@ package bone
 
 import (
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -112,7 +113,7 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 
 			vars := make(map[string]string, totalSize)
 			for k, v := range r.Pattern {
-				vars[v] = ss[k]
+				vars[v], _ = url.QueryUnescape(ss[k])
 			}
 
 			if r.Atts&REGEX != 0 {
@@ -120,7 +121,7 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 					if !v.MatchString(ss[k]) {
 						return false, nil
 					}
-					vars[r.Tag[k]] = ss[k]
+					vars[r.Tag[k]], _ = url.QueryUnescape(ss[k])
 				}
 			}
 
