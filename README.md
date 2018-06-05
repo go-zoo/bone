@@ -1,6 +1,8 @@
 bone [![GoDoc](https://godoc.org/github.com/squiidz/bone?status.png)](http://godoc.org/github.com/go-zoo/bone) [![Build Status](https://travis-ci.org/go-zoo/bone.svg)](https://travis-ci.org/go-zoo/bone) [![Go Report Card](https://goreportcard.com/badge/go-zoo/bone)](https://goreportcard.com/report/go-zoo/bone)
 =======
 
+[bone on Gitlab](https://gitlab.com/go-zoo/bone)
+
 ## What is bone ?
 
 Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support :
