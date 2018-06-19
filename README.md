@@ -50,11 +50,11 @@ func main () {
   mux := bone.New()
 
   mux.RegisterValidator("isNum", func(s string) bool {
-		if _, err := strconv.Atoi(s); err == nil {
-			return true
-		}
-		return false
-	})
+    if _, err := strconv.Atoi(s); err == nil {
+      return true
+    }
+    return false
+  })
 
   // mux.Get, Post, etc ... takes http.Handler
   mux.Get("/home/:id|isNum", http.HandlerFunc(HomeHandler))
