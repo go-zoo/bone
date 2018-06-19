@@ -11,6 +11,7 @@ Bone is a lightweight and lightning fast HTTP Multiplexer for Golang. It support
 - REGEX Parameters
 - Wildcard routes
 - Router Prefix
+- Route params validators
 - Sub Router, `mux.SubRoute()`, support most standard router (bone, gorilla/mux, httpRouter etc...)
 - Http method declaration
 - Support for `http.Handler` and `http.HandlerFunc`
@@ -48,8 +49,15 @@ import(
 func main () {
   mux := bone.New()
 
+  mux.RegisterValidator("isNum", func(s string) bool {
+		  if _, err := strconv.Atoi(s); err == nil {
+			   return true
+		  }
+		  return false
+	 })
+
   // mux.Get, Post, etc ... takes http.Handler
-  mux.Get("/home/:id", http.HandlerFunc(HomeHandler))
+  mux.Get("/home/:id|isNum", http.HandlerFunc(HomeHandler))
   mux.Get("/profil/:id/:var", http.HandlerFunc(ProfilHandler))
   mux.Post("/data", http.HandlerFunc(DataHandler))
 
