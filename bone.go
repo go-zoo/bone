@@ -19,6 +19,7 @@ type Mux struct {
 	Routes        map[string][]*Route
 	prefix        string
 	notFound      http.Handler
+	Validators    map[string]Validator
 	Serve         func(rw http.ResponseWriter, req *http.Request)
 	CaseSensitive bool
 }
@@ -40,6 +41,14 @@ func New(adapters ...adapter) *Mux {
 		m.Serve = m.DefaultServe
 	}
 	return m
+}
+
+// RegisterValidator makes the provided validator available to the routes register on that mux
+func (m *Mux) RegisterValidator(name string, validator Validator) {
+	if m.Validators == nil {
+		m.Validators = make(map[string]Validator)
+	}
+	m.Validators[name] = validator
 }
 
 // Prefix set a default prefix for all routes registred on the router

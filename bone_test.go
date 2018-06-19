@@ -301,7 +301,7 @@ func TestStandAloneRoute(t *testing.T) {
 	valid := false
 	mux := http.NewServeMux()
 
-	testRoute := NewRoute("/test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+	testRoute := NewRoute(nil, "/test", http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		valid = true
 	}))
 	mux.Handle("/test", testRoute.Get())

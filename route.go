@@ -33,16 +33,18 @@ const (
 // handler: is the handler who handle this route
 // Method: define HTTP method on the route
 type Route struct {
-	Path    string
-	Method  string
-	Size    int
-	Atts    int
-	wildPos int
-	Token   Token
-	Pattern map[int]string
-	Compile map[int]*regexp.Regexp
-	Tag     map[int]string
-	Handler http.Handler
+	Path       string
+	Method     string
+	Size       int
+	Atts       int
+	wildPos    int
+	Token      Token
+	Pattern    map[int]string
+	Compile    map[int]*regexp.Regexp
+	Tag        map[int]string
+	Handler    http.Handler
+	mux        *Mux
+	validators map[string]string
 }
 
 // Token content all value of a spliting route path
@@ -55,8 +57,8 @@ type Token struct {
 }
 
 // NewRoute return a pointer to a Route instance and call save() on it
-func NewRoute(url string, h http.Handler) *Route {
-	r := &Route{Path: url, Handler: h}
+func NewRoute(mux *Mux, url string, h http.Handler) *Route {
+	r := &Route{Path: url, Handler: h, mux: mux}
 	r.save()
 	return r
 }
@@ -71,6 +73,13 @@ func (r *Route) save() {
 			case ":":
 				if r.Pattern == nil {
 					r.Pattern = make(map[int]string)
+				}
+				if idx, val := containsPipe(s); val != "" {
+					if r.validators == nil {
+						r.validators = make(map[string]string)
+					}
+					s = s[:idx]
+					r.validators[s[1:]] = val[1:]
 				}
 				r.Pattern[i] = s[1:]
 				r.Atts |= PARAM
@@ -113,6 +122,11 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 
 			vars := make(map[string]string, totalSize)
 			for k, v := range r.Pattern {
+				if validator := r.validators[v]; validator != "" {
+					if !(*r.mux).Validators[validator](ss[k]) {
+						return false, nil
+					}
+				}
 				vars[v], _ = url.QueryUnescape(ss[k])
 			}
 
@@ -128,7 +142,6 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 			return true, vars
 		}
 	}
-
 	return false, nil
 }
 
@@ -189,6 +202,15 @@ func (r *Route) exists(rw http.ResponseWriter, req *http.Request) bool {
 		return true
 	}
 	return false
+}
+
+func containsPipe(src string) (int, string) {
+	for i, c := range src {
+		if c == '|' {
+			return i, src[i:]
+		}
+	}
+	return 0, ""
 }
 
 // Get set the route method to Get
