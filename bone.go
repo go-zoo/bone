@@ -43,6 +43,14 @@ func New(adapters ...adapter) *Mux {
 	return m
 }
 
+// RegisterValidatorFunc makes the provided function available to the routes register on that mux as a validator
+func (m *Mux) RegisterValidatorFunc(name string, validator func(string) bool) {
+	if m.Validators == nil {
+		m.Validators = make(map[string]Validator)
+	}
+	m.Validators[name] = newValidatorFunc(validator)
+}
+
 // RegisterValidator makes the provided validator available to the routes register on that mux
 func (m *Mux) RegisterValidator(name string, validator Validator) {
 	if m.Validators == nil {

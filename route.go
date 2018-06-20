@@ -126,8 +126,8 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 			vars := make(map[string]string, totalSize)
 			for k, v := range r.Pattern {
 				if validators := r.validators[v]; validators != nil {
-					for _, validator := range validators {
-						if !(*r.mux).Validators[validator](ss[k]) {
+					for _, vname := range validators {
+						if !(*r.mux).Validators[vname].Validate(ss[k]) {
 							return false, nil
 						}
 					}

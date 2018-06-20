@@ -1,16 +1,29 @@
 package bone
 
 // Validator can be passed to a route to validate the params
-type Validator func(string) bool
-
-type validator struct {
-	start    int
-	end      int
-	name     string
-	validate Validator
+type Validator interface {
+	Validate(string) bool
 }
 
-func containsValidators(path string) []validator {
+type validatorFunc struct {
+	validateFunc func(string) bool
+}
+
+func newValidatorFunc(v func(string) bool) validatorFunc {
+	return validatorFunc{validateFunc: v}
+}
+
+func (v validatorFunc) Validate(s string) bool {
+	return v.validateFunc(s)
+}
+
+type validatorInfo struct {
+	start int
+	end   int
+	name  string
+}
+
+func containsValidators(path string) []validatorInfo {
 	var index []int
 
 	for i, c := range path {
@@ -20,16 +33,16 @@ func containsValidators(path string) []validator {
 	}
 
 	if len(index) > 0 {
-		var validators []validator
+		var validators []validatorInfo
 		for i, pos := range index {
 			if i+1 == len(index) {
-				validators = append(validators, validator{
+				validators = append(validators, validatorInfo{
 					start: pos,
 					end:   len(path),
 					name:  path[pos:len(path)],
 				})
 			} else {
-				validators = append(validators, validator{
+				validators = append(validators, validatorInfo{
 					start: pos,
 					end:   index[i+1],
 					name:  path[pos:index[i+1]],
