@@ -20,7 +20,23 @@ func main() {
 		return false
 	})
 
-	mux.GetFunc("/ctx/:age|isNum/name/:name", rootHandler)
+	mux.RegisterValidator("biggerThan1000", func(s string) bool {
+		if num, err := strconv.Atoi(s); err == nil {
+			if num >= 1000 {
+				return true
+			}
+		}
+		return false
+	})
+
+	mux.RegisterValidator("lessThan5", func(s string) bool {
+		if len(s) < 5 {
+			return true
+		}
+		return false
+	})
+
+	mux.GetFunc("/ctx/:age|isNum|biggerThan1000/:name|lessThan5", rootHandler)
 
 	http.ListenAndServe(":8080", mux)
 }

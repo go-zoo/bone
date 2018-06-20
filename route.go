@@ -44,7 +44,7 @@ type Route struct {
 	Tag        map[int]string
 	Handler    http.Handler
 	mux        *Mux
-	validators map[string]string
+	validators map[string][]string
 }
 
 // Token content all value of a spliting route path
@@ -71,17 +71,20 @@ func (r *Route) save() {
 		if len(s) >= 1 {
 			switch s[:1] {
 			case ":":
+				s = s[1:]
 				if r.Pattern == nil {
 					r.Pattern = make(map[int]string)
 				}
-				if idx, val := containsPipe(s); val != "" {
+				if validators := containsValidators(s); validators != nil {
 					if r.validators == nil {
-						r.validators = make(map[string]string)
+						r.validators = make(map[string][]string)
 					}
-					s = s[:idx]
-					r.validators[s[1:]] = val[1:]
+					for _, vali := range validators {
+						s = s[:validators[0].start]
+						r.validators[s] = append(r.validators[s], vali.name[1:])
+					}
 				}
-				r.Pattern[i] = s[1:]
+				r.Pattern[i] = s
 				r.Atts |= PARAM
 			case "#":
 				if r.Compile == nil {
@@ -122,9 +125,11 @@ func (r *Route) matchAndParse(req *http.Request) (bool, map[string]string) {
 
 			vars := make(map[string]string, totalSize)
 			for k, v := range r.Pattern {
-				if validator := r.validators[v]; validator != "" {
-					if !(*r.mux).Validators[validator](ss[k]) {
-						return false, nil
+				if validators := r.validators[v]; validators != nil {
+					for _, validator := range validators {
+						if !(*r.mux).Validators[validator](ss[k]) {
+							return false, nil
+						}
 					}
 				}
 				vars[v], _ = url.QueryUnescape(ss[k])
@@ -202,15 +207,6 @@ func (r *Route) exists(rw http.ResponseWriter, req *http.Request) bool {
 		return true
 	}
 	return false
-}
-
-func containsPipe(src string) (int, string) {
-	for i, c := range src {
-		if c == '|' {
-			return i, src[i:]
-		}
-	}
-	return 0, ""
 }
 
 // Get set the route method to Get
