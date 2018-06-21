@@ -36,7 +36,7 @@ func main() {
 		return false
 	})
 
-	mux.RegisterValidator("exist", &Exist{
+	mux.RegisterValidator("exist", &exist{
 		things: []string{"steve", "john", "fee", "charlotte"},
 	})
 
@@ -57,11 +57,11 @@ func subHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte(age + " " + name))
 }
 
-type Exist struct {
+type exist struct {
 	things []string
 }
 
-func (e *Exist) Validate(s string) bool {
+func (e *exist) Validate(s string) bool {
 	for _, thing := range e.things {
 		if thing == s {
 			return true

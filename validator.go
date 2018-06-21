@@ -1,3 +1,10 @@
+/********************************
+*** Multiplexer for Go        ***
+*** Bone is under MIT license ***
+*** Code by CodingFerret      ***
+*** github.com/go-zoo         ***
+*********************************/
+
 package bone
 
 // Validator can be passed to a route to validate the params
@@ -25,7 +32,6 @@ type validatorInfo struct {
 
 func containsValidators(path string) []validatorInfo {
 	var index []int
-
 	for i, c := range path {
 		if c == '|' {
 			index = append(index, i)

@@ -134,12 +134,11 @@ package bone
 			### Result ###
 
 BenchmarkBoneMux				10000000	       124 ns/op
-BenchmarkHttpRouterMux			10000000	       147 ns/op
+BenchmarkHttpRouterMux	10000000	       147 ns/op
 BenchmarkZeusMux				10000000	       210 ns/op
-BenchmarkNetHttpMux	 		 	 3000000	       560 ns/op
-BenchmarkGorillaMux	  			  500000	      2946 ns/op
-BenchmarkGorillaPatMux	 		 1000000	      1805 ns/op
+BenchmarkNetHttpMux	 		 3000000	       560 ns/op
+BenchmarkGorillaMux	  		500000	      2946 ns/op
+BenchmarkGorillaPatMux	 1000000	      1805 ns/op
 
 ok  	github.com/go-zoo/bone	10.997s
-
 */
