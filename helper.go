@@ -8,6 +8,7 @@
 package bone
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -155,16 +156,27 @@ func extractQueries(req *http.Request) (bool, map[string][]string) {
 }
 
 func (m *Mux) otherMethods(rw http.ResponseWriter, req *http.Request) bool {
+	allowed := []string{}
 	for _, met := range method {
 		if met != req.Method {
 			for _, r := range m.Routes[met] {
 				ok := r.exists(rw, req)
 				if ok {
-					rw.WriteHeader(http.StatusMethodNotAllowed)
-					return true
+					allowed = append(allowed, r.Method)
 				}
 			}
 		}
+	}
+	if len(allowed) > 0 {
+		// Build the Allow header. Append HEAD to the list of allowed methods if necessary.
+		allowHeader := strings.Join(allowed, ", ")
+		if strings.Contains(allowHeader, "GET") && !strings.Contains(allowHeader, "HEAD") {
+			allowHeader = fmt.Sprintf("%s, HEAD", allowHeader)
+		}
+
+		rw.Header().Set("Allow", allowHeader)
+		http.Error(rw, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return true
 	}
 	return false
 }
