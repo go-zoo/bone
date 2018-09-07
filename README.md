@@ -49,7 +49,7 @@ import(
 func main () {
   mux := bone.New()
 
-  mux.RegisterValidator("isNum", func(s string) bool {
+  mux.RegisterValidatorFunc("isNum", func(s string) bool {
     if _, err := strconv.Atoi(s); err == nil {
       return true
     }
